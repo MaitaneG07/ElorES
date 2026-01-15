@@ -2,11 +2,14 @@ package vistas;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -25,6 +28,16 @@ public class Menu extends JFrame {
 	 * Create the frame.
 	 */
 	public Menu() {
+		
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(10, 11, 131, 107);
+
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/logoElorrieta.png"));
+        Image img = icon.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(img));
+
+        contentPane.add(lblLogo);
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();

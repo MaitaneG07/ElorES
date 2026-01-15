@@ -1,12 +1,14 @@
 package vistas;
 
 import java.awt.Color;
+import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,6 +38,16 @@ public class Perfil extends JFrame {
 	 * Create the frame.
 	 */
 	public Perfil() {
+		
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(10, 11, 131, 107);
+
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/logoElorrieta.png"));
+        Image img = icon.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(img));
+
+        contentPane.add(lblLogo);
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();

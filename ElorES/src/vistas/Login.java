@@ -1,56 +1,57 @@
 package vistas;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import java.awt.Color;
+
+import elorESClient.Cliente;
 
 public class Login extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JLabel lblEstado;
-	private JPasswordField txtPassword;
-	private JTextField txtUsuario;
-	private JLabel lblTitulo;
-	private JLabel lblUsuario;
-	private JLabel lblPassword;
-	private JButton btnLogin;
-	private JButton btnReconectar;
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JLabel lblEstado;
+    private JPasswordField txtPassword;
+    private JTextField txtUsuario;
+    private JLabel lblTitulo;
+    private JLabel lblUsuario;
+    private JLabel lblPassword;
+    private JButton btnLogin;
+    private JButton btnReconectar;
+    private Cliente cliente;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Login frame = new Login();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-	/**
-	 * Create the frame.
-	 */
-	public Login() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public Login() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 855, 600);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -92,15 +93,11 @@ public class Login extends JFrame {
         btnLogin.setBounds(333, 320, 179, 35);
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //Solo acceder con profesor
-            	Menu pantallaMenu = new Menu();
-            	pantallaMenu.setVisible(true);
-            	dispose();
+                iniciarSesion();
             }
         });
         contentPane.add(btnLogin);
         
-        // Botón para reconectar manualmente si falla
         btnReconectar = new JButton("Reconectar");
         btnReconectar.setBackground(new Color(65, 105, 225));
         btnReconectar.setForeground(Color.WHITE);
@@ -108,32 +105,137 @@ public class Login extends JFrame {
         btnReconectar.setBounds(333, 370, 179, 30);
         btnReconectar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //Metodo para conectar con el servidor
+                conectarAlServidor(); // CORREGIDO
             }
         });
         contentPane.add(btnReconectar);
         
-        // Indicador de conexión
         lblEstado = new JLabel("Estado: Desconectado");
         lblEstado.setFont(new Font("Tahoma", Font.PLAIN, 12));
         lblEstado.setBounds(20, 520, 300, 20);
         contentPane.add(lblEstado);
+
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(10, 11, 131, 107);
+
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/logoElorrieta.png"));
+        Image img = icon.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(img));
+
+        contentPane.add(lblLogo);
         
-        // Conectar cuando la ventana se haya mostrado completamente
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                // Conectar en un hilo separado para no bloquear la interfaz
                 new Thread(() -> {
                     try {
-                        Thread.sleep(500); // Espera medio segundo
-                      //Metodo para conectar con el servidor
+                        Thread.sleep(500);
+                        conectarAlServidor();
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
                 }).start();
             }
         });
-	}
+    }
+    
+    /**
+     * Conecta con el servidor
+     */
+    private void conectarAlServidor() {
+        lblEstado.setText("Estado: Conectando...");
+        
+        String ipServidor = "10.5.104.31";
+        int puerto = 8080;
+        
+        new Thread(() -> {
+            cliente = new Cliente(ipServidor, puerto);
+            
+            if (cliente.conectar()) {
+                System.out.println("Conexión establecida con el servidor");
+                SwingUtilities.invokeLater(() -> {
+                    lblEstado.setText("Estado: Conectado ✓");
+                });
+            } else {
+                SwingUtilities.invokeLater(() -> {
+                    lblEstado.setText("Estado: Error de conexión ✗");
+                    JOptionPane.showMessageDialog(Login.this,
+                        "No se pudo conectar con el servidor.",
+                        "Error de Conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        }).start();
+    }
 
+    /**
+     * Maneja el inicio de sesión
+     */
+    protected void iniciarSesion() {
+        if (cliente == null || !cliente.estaConectado()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay conexión , intente reconectar.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String usuario = txtUsuario.getText();
+        String password = new String(txtPassword.getPassword());
+        
+        if (usuario.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Por favor complete todos los campos",
+                "Advertencia",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                System.out.println("Enviando credenciales al servidor...");
+                
+                String respuesta = cliente.enviarYRecibir("LOGIN:" + usuario + ":" + password);
+                
+                System.out.println("Respuesta del servidor: " + respuesta);
+                
+                SwingUtilities.invokeLater(() -> {
+                    
+                	if (respuesta != null && respuesta.equals("OK")) {
+                        JOptionPane.showMessageDialog(this,
+                            "Inicio de sesión exitoso",
+                            "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        abrirMenu();
+                        
+                    } else if (respuesta != null && respuesta.equals("ERROR")) {
+                        JOptionPane.showMessageDialog(this,
+                            "Usuario o contraseña incorrectos",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "No se recibió respuesta del servidor",
+                            "Error de Comunicación",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                SwingUtilities.invokeLater(() -> {
+                    
+                    JOptionPane.showMessageDialog(this,
+                        "Error al comunicarse con el servidor",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        }).start();
+    }
+
+    private void abrirMenu() {
+        Menu pantallaMenu = new Menu();
+        pantallaMenu.setVisible(true);
+        dispose();
+    }
 }
