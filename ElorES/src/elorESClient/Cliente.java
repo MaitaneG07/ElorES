@@ -104,4 +104,5 @@ public class Cliente {
     public boolean estaConectado() {
         return socket != null && socket.isConnected() && !socket.isClosed();
     }
+    
 }
