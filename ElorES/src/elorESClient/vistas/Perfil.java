@@ -8,6 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import elorESClient.modelo.entities.Users;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
@@ -34,6 +37,7 @@ public class Perfil extends JFrame {
 	private JLabel lbl_Telefono2;
 	private JButton btnVolver;
 	private int idProfesor;
+	private Users user;
 
 	/**
 	 * Establece el ID del cliente y su nivel.
@@ -48,8 +52,12 @@ public class Perfil extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @param users 
 	 */
-	public Perfil() {
+	public Perfil(Users user) {
+		
+		this.user = user;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();
@@ -148,7 +156,7 @@ public class Perfil extends JFrame {
         btnVolver.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		Menu pantallaMenu = new Menu();
+        		Menu pantallaMenu = new Menu(user);
         		pantallaMenu.setVisible(true);
         		dispose();
         	}
@@ -158,17 +166,19 @@ public class Perfil extends JFrame {
         btnVolver.setBounds(697, 512, 106, 31);
         contentPane.add(btnVolver);
 
-        /* Foto
-         * email
-         * username
-         * nomobre
-         * apellidos
-         * DNI
-         * direccion
-         * telefono1
-         * telefono2
-         * */
+        cargarDatos();
         
         
+	}
+
+	private void cargarDatos() {
+		lbl_Nombre.setText(user.getNombre());
+		lbl_Apellidos.setText(user.getApellidos());
+		lbl_Email.setText(user.getEmail());
+		lbl_Dni.setText(user.getDni());
+		lbl_Direccion.setText(user.getDireccion());
+		lbl_Telefono1.setText(user.getTelefono1());
+		lbl_Telefono2.setText(user.getTelefono2());
+		
 	}
 }

@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import elorESClient.modelo.entities.Users;
+
 public class GestionReunion extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -27,8 +29,9 @@ public class GestionReunion extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @param user 
 	 */
-	public GestionReunion() {
+	public GestionReunion(Users user) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();

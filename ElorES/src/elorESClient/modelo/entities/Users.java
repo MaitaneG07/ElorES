@@ -19,16 +19,12 @@ public class Users implements Serializable {
     private String telefono2;
     private Tipos tipos;
     private String argazkiaUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
-    // Constructores
     public Users() {
     }
 
     public Users(Integer id, String email, String username, String password, String nombre, String apellidos,
-			String dni, String direccion, String telefono1, String telefono2, Tipos tipos, String argazkiaUrl,
-			LocalDateTime createdAt, LocalDateTime updatedAt) {
+			String dni, String direccion, String telefono1, String telefono2, Tipos tipos, String argazkiaUrl) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -42,11 +38,8 @@ public class Users implements Serializable {
 		this.telefono2 = telefono2;
 		this.tipos = tipos;
 		this.argazkiaUrl = argazkiaUrl;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
 	}
 
-	// Getters y Setters
     public Integer getId() {
         return id;
     }
@@ -133,22 +126,6 @@ public class Users implements Serializable {
 
     public void setArgazkiaUrl(String argazkiaUrl) {
         this.argazkiaUrl = argazkiaUrl;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Tipos getTipos() {

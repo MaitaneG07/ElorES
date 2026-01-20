@@ -8,7 +8,7 @@ public class Message {
 	private String password;
 	private String estado;
 	private String mensaje;
-	private Object userData;
+	private Users userData;
 
 	public Message() {
 	}
@@ -81,11 +81,11 @@ public class Message {
 		this.mensaje = mensaje;
 	}
 
-	public Object getUserData() {
+	public Users getUserData() {
 		return userData;
 	}
 
-	public void setUserData(Object userData) {
+	public void setUserData(Users userData) {
 		this.userData = userData;
 	}
 

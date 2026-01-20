@@ -37,6 +37,7 @@ public class Login extends JFrame {
     private JButton btnLogin;
     private JButton btnReconectar;
     private Cliente cliente;
+	private Message respuesta;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -146,7 +147,8 @@ public class Login extends JFrame {
     private void conectarAlServidor() {
         lblEstado.setText("Estado: Conectando...");
         
-        String ipServidor = "10.5.104.31";
+//        String ipServidor = "10.5.104.31";
+        String ipServidor = "localhost";
         int puerto = 8080;
         
         new Thread(() -> {
@@ -196,7 +198,7 @@ public class Login extends JFrame {
             try {
                 System.out.println("Enviando credenciales al servidor...");
                 
-                Message respuesta = cliente.login(usuario, password);
+                respuesta = cliente.login(usuario, password);
                 
                 SwingUtilities.invokeLater(() -> {
                     
@@ -236,7 +238,7 @@ public class Login extends JFrame {
     }
 
     private void abrirMenu() {
-        Menu pantallaMenu = new Menu();
+        Menu pantallaMenu = new Menu(respuesta.getUserData());
         pantallaMenu.setVisible(true);
         dispose();
     }

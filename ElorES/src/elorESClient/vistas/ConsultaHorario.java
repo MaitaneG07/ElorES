@@ -15,6 +15,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import elorESClient.modelo.entities.Users;
+
 public class ConsultaHorario extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -37,8 +39,9 @@ public class ConsultaHorario extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @param users 
 	 */
-	public ConsultaHorario() {
+	public ConsultaHorario(Users user) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();
@@ -102,7 +105,7 @@ public class ConsultaHorario extends JFrame {
 		btnVolver.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Menu pantallaMenu = new Menu();
+				Menu pantallaMenu = new Menu(user);
 				pantallaMenu.setVisible(true);
 				dispose();
 			}

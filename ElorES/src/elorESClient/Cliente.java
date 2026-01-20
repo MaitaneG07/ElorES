@@ -6,8 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.time.LocalDateTime;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonSerializer;
 
 import elorESClient.modelo.entities.message.Message;
 
@@ -23,7 +27,15 @@ public class Cliente {
     public Cliente(String ipServidor, int puerto) {
         this.ipServidor = ipServidor;
         this.puerto = puerto;
-        this.gson = new Gson();
+     // Configurar Gson con adaptadores para LocalDateTime
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, 
+                    (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) -> 
+                        context.serialize(src.toString()))
+                .registerTypeAdapter(LocalDateTime.class, 
+                    (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> 
+                        LocalDateTime.parse(json.getAsString()))
+                .create();
     }
     
     /**
@@ -32,7 +44,8 @@ public class Cliente {
      */
     public boolean conectar() {
     	try {
-            socket = new Socket(ipServidor, puerto);
+//            socket = new Socket(ipServidor, puerto);
+            socket = new Socket("localhost", puerto);
             socket.setSoTimeout(5000); 
             
             System.out.println("Conectado al servidor");

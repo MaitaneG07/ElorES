@@ -17,6 +17,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import elorESClient.modelo.entities.Users;
+
 import javax.swing.SwingConstants;
 
 import java.awt.Color;
@@ -55,8 +57,9 @@ public class ConsultaAlumnos extends JFrame {
 	}
 	/**
 	 * Create the frame.
+	 * @param users 
 	 */
-	public ConsultaAlumnos() {
+	public ConsultaAlumnos(Users user) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
 		contentPane = new JPanel();
@@ -241,7 +244,7 @@ public class ConsultaAlumnos extends JFrame {
 		btnVolver.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Menu pantallaMenu = new Menu();
+				Menu pantallaMenu = new Menu(user);
 				pantallaMenu.setVisible(true);
 				dispose();
 			}
