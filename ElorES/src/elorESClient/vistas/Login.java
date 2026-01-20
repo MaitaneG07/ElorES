@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import elorESClient.Cliente;
+import elorESClient.modelo.entities.message.Message;
 
 public class Login extends JFrame {
 
@@ -146,7 +147,7 @@ public class Login extends JFrame {
         lblEstado.setText("Estado: Conectando...");
         
         String ipServidor = "10.5.104.31";
-        int puerto = 8081;
+        int puerto = 8080;
         
         new Thread(() -> {
             cliente = new Cliente(ipServidor, puerto);
@@ -154,11 +155,11 @@ public class Login extends JFrame {
             if (cliente.conectar()) {
                 System.out.println("Conexión establecida con el servidor");
                 SwingUtilities.invokeLater(() -> {
-                    lblEstado.setText("Estado: Conectado ✓");
+                    lblEstado.setText("Estado: Conectado");
                 });
             } else {
                 SwingUtilities.invokeLater(() -> {
-                    lblEstado.setText("Estado: Error de conexión ✗");
+                    lblEstado.setText("Estado: Error de conexión");
                     JOptionPane.showMessageDialog(Login.this,
                         "No se pudo conectar con el servidor.",
                         "Error de Conexión",
@@ -174,7 +175,7 @@ public class Login extends JFrame {
     protected void iniciarSesion() {
         if (cliente == null || !cliente.estaConectado()) {
             JOptionPane.showMessageDialog(this,
-                "No hay conexión , intente reconectar.",
+                "No hay conexión, intente reconectar.",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
             return;
@@ -195,23 +196,23 @@ public class Login extends JFrame {
             try {
                 System.out.println("Enviando credenciales al servidor...");
                 
-                String respuesta = cliente.enviarYRecibir("LOGIN:" + usuario + ":" + password);
-                
-                System.out.println("Respuesta del servidor: " + respuesta);
+                Message respuesta = cliente.login(usuario, password);
                 
                 SwingUtilities.invokeLater(() -> {
                     
-                	if (respuesta != null && respuesta.equals("OK")) {
-                		System.out.println("La respuesta del servidor es: " + respuesta);
+                	if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+                		System.out.println("La respuesta del servidor es: " + respuesta.getEstado());
+                		System.out.println("Datos del usuario: " + respuesta.getUserData());
+                		
                         JOptionPane.showMessageDialog(this,
                             "Inicio de sesión exitoso",
                             "Éxito",
                             JOptionPane.INFORMATION_MESSAGE);
                         abrirMenu();
                         
-                    } else if (respuesta != null && respuesta.equals("ERROR")) {
+                    } else if (respuesta != null && "ERROR".equals(respuesta.getEstado())) {
                         JOptionPane.showMessageDialog(this,
-                            "Usuario o contraseña incorrectos",
+                            respuesta.getMensaje(),
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                     } else {

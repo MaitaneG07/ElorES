@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import com.google.gson.Gson;
+
+import elorESClient.modelo.entities.message.Message;
+
 public class Cliente {
 
 	private Socket socket;
@@ -14,10 +18,12 @@ public class Cliente {
     private BufferedReader entrada;
     private String ipServidor;
     private int puerto;
+    private Gson gson;
     
     public Cliente(String ipServidor, int puerto) {
         this.ipServidor = ipServidor;
         this.puerto = puerto;
+        this.gson = new Gson();
     }
     
     /**
@@ -36,10 +42,6 @@ public class Cliente {
                 new InputStreamReader(socket.getInputStream())
             );
             
-            // Leer el mensaje de bienvenida del servidor
-            String bienvenida = entrada.readLine();
-            System.out.println("Servidor dice: " + bienvenida);
-            
             return true;
             
         } catch (IOException e) {
@@ -50,24 +52,24 @@ public class Cliente {
     }
     
     /**
-     * Envía un mensaje al servidor
+     * Envía un mensaje JSON al servidor
      */
-    public void enviarMensaje(String mensaje) {
+    public void enviarMensaje(String mensajeJson) {
         if (salida != null) {
-            salida.println(mensaje);
+            salida.println(mensajeJson);
             salida.flush(); 
-            System.out.println("Mensaje enviado: " + mensaje);
+            System.out.println("[ENVIADO] " + mensajeJson);
         }
     }
     
     /**
-     * Recibe un mensaje del servidor con timeout
+     * Recibe un mensaje JSON del servidor con timeout
      */
     public String recibirMensaje() {
         try {
             if (entrada != null) {
                 String respuesta = entrada.readLine();
-                System.out.println("Respuesta recibida: " + respuesta);
+                System.out.println("[RECIBIDO] " + respuesta);
                 return respuesta;
             }
         } catch (SocketTimeoutException e) {
@@ -80,11 +82,36 @@ public class Cliente {
     }
     
     /**
-     * Envía un mensaje y espera respuesta
+     * Realiza el login y devuelve el objeto Message con la respuesta
      */
-    public String enviarYRecibir(String mensaje) {
-        enviarMensaje(mensaje);
-        return recibirMensaje();
+    public Message login(String usuario, String password) {
+        try {
+            Message mensajeLogin = Message.crearLogin(usuario, password);
+            
+            String jsonLogin = gson.toJson(mensajeLogin);
+            System.out.println("[LOGIN] Enviando credenciales...");
+            
+            enviarMensaje(jsonLogin);
+            
+            String respuestaJson = recibirMensaje();
+            
+            if (respuestaJson != null) {
+                Message respuesta = gson.fromJson(respuestaJson, Message.class);
+                if ("OK".equals(respuesta.getEstado())) {
+                    System.out.println("[LOGIN EXITOSO] " + respuesta.getMensaje());
+                } else {
+                    System.out.println("[LOGIN FALLIDO] " + respuesta.getMensaje());
+                }
+                
+                return respuesta;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error en login: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return null;
     }
     
     /**
