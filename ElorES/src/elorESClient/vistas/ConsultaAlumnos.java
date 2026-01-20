@@ -234,6 +234,21 @@ public class ConsultaAlumnos extends JFrame {
 
 		btnCurso.addActionListener(e -> {
 			popupMenuCurso.show(btnCurso, 0, btnCurso.getHeight());
+			
 		});
+		
+		JButton btnVolver = new JButton();
+		btnVolver.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Menu pantallaMenu = new Menu();
+				pantallaMenu.setVisible(true);
+				dispose();
+			}
+		});
+		btnVolver.setForeground(Color.WHITE);
+		btnVolver.setBackground(new Color(65, 105, 225));
+		btnVolver.setBounds(727, 514, 102, 40);
+		contentPane.add(btnVolver);
 	}
 }
