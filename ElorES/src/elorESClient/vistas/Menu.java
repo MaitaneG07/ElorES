@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import elorESClient.Cliente;
 import elorESClient.modelo.entities.Users;
 
 public class Menu extends JFrame {
@@ -27,6 +28,7 @@ public class Menu extends JFrame {
 	private JButton btnSalir;
 	private int idProfesor;
 	private Users user;
+	private Cliente cliente;
 
 	/**
 	 * Establece el ID del cliente y su nivel.
@@ -41,11 +43,13 @@ public class Menu extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @param cliente 
 	 * @param users 
 	 */
-	public Menu(Users user) {
+	public Menu(Users user, Cliente cliente) {
 		
 		this.user = user;
+		this.cliente = cliente;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
@@ -70,7 +74,7 @@ public class Menu extends JFrame {
         btnPerfil.setBounds(333, 148, 201, 35);
         btnPerfil.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Perfil pantallaPerfil = new Perfil(user);
+                Perfil pantallaPerfil = new Perfil(user, cliente);
                 pantallaPerfil.setVisible(true);
                 dispose();
             }
@@ -84,7 +88,7 @@ public class Menu extends JFrame {
         btnConsultarAlumnos.setBounds(333, 212, 201, 35);
         btnConsultarAlumnos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ConsultaAlumnos pantallaConsultaAlumnos = new ConsultaAlumnos(user);
+                ConsultaAlumnos pantallaConsultaAlumnos = new ConsultaAlumnos(user, cliente);
                 pantallaConsultaAlumnos.setVisible(true);
                 dispose();
             }
@@ -98,7 +102,7 @@ public class Menu extends JFrame {
         btnHorario.setBounds(333, 276, 201, 35);
         btnHorario.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ConsultaHorario pantallaConsultaHorario = new ConsultaHorario(user);
+                ConsultaHorario pantallaConsultaHorario = new ConsultaHorario(user, cliente);
                 pantallaConsultaHorario.setVisible(true);
                 dispose();
             }
@@ -112,7 +116,7 @@ public class Menu extends JFrame {
         btnOtrosHorarios.setBounds(333, 339, 201, 35);
         btnOtrosHorarios.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ConsultaOtroHorario pantallaConsultaOtroHorario = new ConsultaOtroHorario(user);
+                ConsultaOtroHorario pantallaConsultaOtroHorario = new ConsultaOtroHorario(user, cliente);
                 pantallaConsultaOtroHorario.setVisible(true);
                 dispose();
             }
@@ -126,7 +130,7 @@ public class Menu extends JFrame {
         btnReuniones.setBounds(333, 403, 201, 35);
         btnReuniones.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                GestionReunion pantallaGestionReunion = new GestionReunion(user);
+                GestionReunion pantallaGestionReunion = new GestionReunion(user, cliente);
                 pantallaGestionReunion.setVisible(true);
                 dispose();
             }

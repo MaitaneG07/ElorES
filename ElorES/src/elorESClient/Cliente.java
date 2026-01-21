@@ -13,7 +13,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 
-import elorESClient.modelo.entities.message.Message;
+import elorESClient.modelo.message.Message;
 
 public class Cliente {
 
@@ -125,6 +125,43 @@ public class Cliente {
         }
         
         return null;
+    }
+    
+    /**
+     * Realiza la búsqueda de todos los usuarios
+     * @param idProfesor 
+     * @return Lista de usuarios
+     */
+    public Message getAllStudentsById(int idProfesor) {
+    	try {
+            Message mensajeAllUsers = Message.createListStudentsById(idProfesor);
+            
+            String jsonAllUsers = gson.toJson(mensajeAllUsers);
+            System.out.println("[GET_ALUMNOS_BY_PROFESOR] Solicitando alumnos del profesor: " + idProfesor);
+            
+            enviarMensaje(jsonAllUsers);
+            
+            String respuestaJson = recibirMensaje();
+            
+            if (respuestaJson != null) {
+                Message respuesta = gson.fromJson(respuestaJson, Message.class);
+                if ("OK".equals(respuesta.getEstado())) {
+                    System.out.println("[EXITOSO] " + respuesta.getMensaje());
+                    if(respuesta.getUsersList() != null) {
+                    	System.out.println("[DATOS] Se recibieron " + respuesta.getUsersList().size() + " alumnos.");
+                    }
+                } else {
+                    System.out.println("[FALLIDO] " + respuesta.getMensaje());
+                }
+                
+                return respuesta;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error obteniendo alumnos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    	return null;
     }
     
     /**

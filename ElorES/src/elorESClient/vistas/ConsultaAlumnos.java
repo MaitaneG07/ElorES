@@ -1,8 +1,11 @@
 package elorESClient.vistas;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
@@ -14,15 +17,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import elorESClient.Cliente;
 import elorESClient.modelo.entities.Users;
-
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.awt.Font;
+import elorESClient.modelo.message.Message;
 
 public class ConsultaAlumnos extends JFrame {
 
@@ -44,6 +45,9 @@ public class ConsultaAlumnos extends JFrame {
 	private JMenuItem menuSMR;
 	private AbstractButton btnCurso;
 	private JPopupMenu popupMenuCurso;
+	private Users user;
+	private Message respuesta;
+	private Cliente cliente;
 
 	/**
 	 * Establece el ID del cliente y su nivel.
@@ -55,11 +59,19 @@ public class ConsultaAlumnos extends JFrame {
 		this.idProfesor = idProfesor;
 		System.out.println("Seteando ID Profesor: " + idProfesor);
 	}
+
 	/**
 	 * Create the frame.
-	 * @param users 
+	 * 
+	 * @param cliente2
+	 * 
+	 * @param users
 	 */
-	public ConsultaAlumnos(Users user) {
+	public ConsultaAlumnos(Users user, Cliente cliente) {
+
+		this.user = user;
+		this.cliente = cliente;
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
 		contentPane = new JPanel();
@@ -67,16 +79,15 @@ public class ConsultaAlumnos extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		
-        JLabel lblLogo = new JLabel();
-        lblLogo.setBounds(10, 11, 131, 107);
+		JLabel lblLogo = new JLabel();
+		lblLogo.setBounds(10, 11, 131, 107);
 
-        ImageIcon icon = new ImageIcon(getClass().getResource("/elorESClient/images/logoElorrieta.png"));
-        Image img = icon.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
-        lblLogo.setIcon(new ImageIcon(img));
+		ImageIcon icon = new ImageIcon(getClass().getResource("/elorESClient/images/logoElorrieta.png"));
+		Image img = icon.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
+		lblLogo.setIcon(new ImageIcon(img));
 
-        contentPane.add(lblLogo);
-        
+		contentPane.add(lblLogo);
+
 		scrollPaneAlumnos = new JScrollPane();
 		scrollPaneAlumnos.setBounds(162, 131, 574, 149);
 		contentPane.add(scrollPaneAlumnos);
@@ -92,7 +103,6 @@ public class ConsultaAlumnos extends JFrame {
 		modeloAlumnos.addColumn("id");
 		modeloAlumnos.addColumn("Nombre");
 		modeloAlumnos.addColumn("Apellidos");
-		modeloAlumnos.addColumn("Email");
 
 		tablaAlumnos = new JTable(modeloAlumnos);
 		tablaAlumnos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -106,7 +116,8 @@ public class ConsultaAlumnos extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 1 && tablaAlumnos.getSelectedRow() != -1) {
 					int selectedRow = tablaAlumnos.getSelectedRow();
-//					actualizarTablaDetallesAlumno(modeloDetallesAlumno, idProfesor);
+					int idAlumno = (int) tablaAlumnos.getValueAt(selectedRow, 0);
+					actualizarTablaDetallesAlumno(modeloDetallesAlumno, idAlumno);
 
 				}
 			}
@@ -126,8 +137,8 @@ public class ConsultaAlumnos extends JFrame {
 				return false;
 			}
 		};
-		
-		//AQUI MOSTRAREMOS LA IMAGEN DEL ALUMNO SELECCIONADO
+
+		// AQUI MOSTRAREMOS LA IMAGEN DEL ALUMNO SELECCIONADO
 //        JLabel lblImagenAlumno = new JLabel();
 //        lblImagenAlumno.setBounds(10, 371, 131, 110);
 //
@@ -136,17 +147,20 @@ public class ConsultaAlumnos extends JFrame {
 //        lblImagenAlumno.setIcon(new ImageIcon(img));
 //
 //        contentPane.add(lblImagenAlumno);
-        
+
 		modeloDetallesAlumno.addColumn("id");
 		modeloDetallesAlumno.addColumn("Nombre");
 		modeloDetallesAlumno.addColumn("Apellidos");
+		modeloDetallesAlumno.addColumn("Email");
+		modeloDetallesAlumno.addColumn("Telefono 1");
+		modeloDetallesAlumno.addColumn("Telefono 2");
 
 		tablaDetallesAlumno = new JTable(modeloDetallesAlumno);
 		tablaDetallesAlumno.getColumnModel().getColumn(0).setMinWidth(0);
 		tablaDetallesAlumno.getColumnModel().getColumn(0).setMaxWidth(0);
 		tablaDetallesAlumno.getColumnModel().getColumn(0).setWidth(0);
 		scrollPaneDetallesAlumno.setViewportView(tablaDetallesAlumno);
-		
+
 		JLabel lblTitulo = new JLabel("CONSULTAR ALUMNOS");
 		lblTitulo.setForeground(new Color(65, 105, 225));
 		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 26));
@@ -154,9 +168,8 @@ public class ConsultaAlumnos extends JFrame {
 		lblTitulo.setBounds(263, 11, 307, 79);
 		contentPane.add(lblTitulo);
 
-//		actualizarTablaAlumnos(modeloAlumnos, null);
-
 		btnCiclo = new JButton();
+		btnCiclo.setText("Ciclo");
 		btnCiclo.setBackground(new Color(65, 105, 225));
 		btnCiclo.setForeground(Color.WHITE);
 		btnCiclo.setBounds(727, 78, 102, 40);
@@ -175,7 +188,7 @@ public class ConsultaAlumnos extends JFrame {
 		menuDAW.addActionListener(e -> {
 //			actualizarTablaAlumnos(modeloAlumnos, "DAW");
 		});
-		
+
 		menuOTROS = new JMenuItem("OTROS");
 		popupMenuCiclo.add(menuOTROS);
 		menuOTROS.addActionListener(e -> {
@@ -199,11 +212,12 @@ public class ConsultaAlumnos extends JFrame {
 		});
 
 		btnCurso = new JButton();
+		btnCurso.setText("Curso");
 		btnCurso.setBackground(new Color(65, 105, 225));
 		btnCurso.setForeground(Color.WHITE);
 		btnCurso.setBounds(612, 78, 102, 40);
 		contentPane.add(btnCurso);
-		
+
 		popupMenuCurso = new JPopupMenu();
 
 		// Hay 5 ids de ciclo
@@ -220,7 +234,7 @@ public class ConsultaAlumnos extends JFrame {
 		menuDAW.addActionListener(e -> {
 //			actualizarTablaAlumnos(modeloAlumnos, "1");
 		});
-		
+
 		// Este dos es el id 3 de ciclo
 		menuOTROS = new JMenuItem("2");
 		popupMenuCurso.add(menuOTROS);
@@ -237,21 +251,75 @@ public class ConsultaAlumnos extends JFrame {
 
 		btnCurso.addActionListener(e -> {
 			popupMenuCurso.show(btnCurso, 0, btnCurso.getHeight());
-			
+
 		});
-		
+
 		JButton btnVolver = new JButton();
+		btnVolver.setText("VOLVER");
 		btnVolver.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Menu pantallaMenu = new Menu(user);
+				Menu pantallaMenu = new Menu(user, cliente);
 				pantallaMenu.setVisible(true);
 				dispose();
 			}
 		});
-		btnVolver.setForeground(Color.WHITE);
 		btnVolver.setBackground(new Color(65, 105, 225));
+		btnVolver.setForeground(Color.WHITE);
 		btnVolver.setBounds(727, 514, 102, 40);
 		contentPane.add(btnVolver);
+
+		actualizarTablaAlumnos(modeloAlumnos, null);
+
+	}
+
+	protected void actualizarTablaDetallesAlumno(DefaultTableModel modeloDetallesAlumno, int idAlumno) {
+		modeloDetallesAlumno.setRowCount(0);
+
+		respuesta = cliente.getAllStudentsById(this.user.getId());
+
+		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+			List<Users> listStudents = respuesta.getUsersList();
+			if (listStudents != null && !listStudents.isEmpty()) {
+				for (Users alumno : listStudents) {
+					if (alumno.getId().equals(idAlumno)) {
+						modeloDetallesAlumno
+								.addRow(new Object[] { 
+										alumno.getId(), 
+										alumno.getNombre(), 
+										alumno.getApellidos(),
+										alumno.getEmail(),
+										alumno.getTelefono1(),
+										alumno.getTelefono2()});
+					}
+				}
+			} else {
+				System.out.println("No se encontraron alumnos");
+			}
+		} else {
+			System.err.println("Error al obtener alumnos: " + respuesta.getMensaje());
+		}
+	}
+
+	private void actualizarTablaAlumnos(DefaultTableModel modeloAlumnos, Object object) {
+		modeloAlumnos.setRowCount(0);
+
+		respuesta = cliente.getAllStudentsById(this.user.getId());
+
+		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+			List<Users> listStudents = respuesta.getUsersList();
+			if (listStudents != null && !listStudents.isEmpty()) {
+				for (Users alumno : listStudents) {
+					modeloAlumnos.addRow(new Object[] { 
+							alumno.getId(), 
+							alumno.getNombre(), 
+							alumno.getApellidos()});
+				}
+			} else {
+				System.out.println("No se encontraron alumnos");
+			}
+		} else {
+			System.err.println("Error al obtener alumnos: " + respuesta.getMensaje());
+		}
 	}
 }

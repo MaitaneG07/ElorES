@@ -1,4 +1,6 @@
-package elorESClient.modelo.entities.message;
+package elorESClient.modelo.message;
+
+import java.util.List;
 
 import elorESClient.modelo.entities.Users;
 
@@ -9,6 +11,8 @@ public class Message {
 	private String estado;
 	private String mensaje;
 	private Users userData;
+	private List<Users> usersList; 
+	private Integer idProfesor; 
 
 	public Message() {
 	}
@@ -22,7 +26,25 @@ public class Message {
 		return msg;
 	}
 
-	// Constructor para respuestas simples (servidor -> cliente)
+	// NUEVO: Método para solicitar lista de alumnos por profesor
+	public static Message createListStudentsById(int idProfesor) {
+		Message msg = new Message();
+		msg.tipo = "GET_ALUMNOS_BY_PROFESOR";
+		msg.idProfesor = idProfesor;
+		return msg;
+	}
+	
+    // Constructor para respuestas con objeto Users (servidor -> cliente)
+    public static Message crearRespuestaConUsuario(String tipo, String estado, String mensaje, Users userData) {
+        Message msg = new Message();
+        msg.tipo = tipo;
+        msg.estado = estado;
+        msg.mensaje = mensaje;
+        msg.userData = userData;
+        return msg;
+    }
+
+	// Constructor para respuestas simples
 	public static Message crearRespuesta(String tipo, String estado, String mensaje) {
 		Message msg = new Message();
 		msg.tipo = tipo;
@@ -31,16 +53,17 @@ public class Message {
 		return msg;
 	}
 
-	// Constructor para respuestas con objeto Users (servidor -> cliente)
-	public static Message crearRespuestaConUsuario(String tipo, String estado, String mensaje, Users userData) {
+	// NUEVO: Constructor para respuestas con lista de usuarios
+	public static Message crearRespuestaConLista(String tipo, String estado, String mensaje, List<Users> usersList) {
 		Message msg = new Message();
 		msg.tipo = tipo;
 		msg.estado = estado;
 		msg.mensaje = mensaje;
-		msg.userData = userData;
+		msg.usersList = usersList;
 		return msg;
 	}
 
+	// Getters y Setters
 	public String getTipo() {
 		return tipo;
 	}
@@ -89,9 +112,26 @@ public class Message {
 		this.userData = userData;
 	}
 
+	public List<Users> getUsersList() {
+		return usersList;
+	}
+
+	public void setUsersList(List<Users> usersList) {
+		this.usersList = usersList;
+	}
+
+	public Integer getIdProfesor() {
+		return idProfesor;
+	}
+
+	public void setIdProfesor(Integer idProfesor) {
+		this.idProfesor = idProfesor;
+	}
+
 	@Override
 	public String toString() {
 		return "Message{" + "tipo='" + tipo + '\'' + ", usuario='" + usuario + '\'' + ", estado='" + estado + '\''
-				+ ", mensaje='" + mensaje + '\'' + ", userData=" + userData + '}';
+				+ ", mensaje='" + mensaje + '\'' + ", userData=" + userData + ", usersList="
+				+ (usersList != null ? usersList.size() + " usuarios" : "null") + ", idProfesor=" + idProfesor + '}';
 	}
 }

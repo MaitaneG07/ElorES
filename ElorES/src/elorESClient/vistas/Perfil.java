@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import elorESClient.Cliente;
 import elorESClient.modelo.entities.Users;
 
 import javax.swing.ImageIcon;
@@ -38,6 +39,7 @@ public class Perfil extends JFrame {
 	private JButton btnVolver;
 	private int idProfesor;
 	private Users user;
+	private Cliente cliente;
 
 	/**
 	 * Establece el ID del cliente y su nivel.
@@ -52,11 +54,14 @@ public class Perfil extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @param cliente 
 	 * @param users 
 	 */
-	public Perfil(Users user) {
+	public Perfil(Users user, Cliente cliente) {
 		
 		this.user = user;
+		this.cliente = cliente;
+		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
@@ -125,38 +130,38 @@ public class Perfil extends JFrame {
         contentPane.add(lblFoto);
         
         lbl_Nombre = new JLabel("");
-        lbl_Nombre.setBounds(546, 99, 106, 17);
+        lbl_Nombre.setBounds(546, 99, 198, 17);
         contentPane.add(lbl_Nombre);
         
         lbl_Apellidos = new JLabel("");
-        lbl_Apellidos.setBounds(546, 158, 106, 17);
+        lbl_Apellidos.setBounds(546, 158, 198, 17);
         contentPane.add(lbl_Apellidos);
         
         lbl_Email = new JLabel("");
-        lbl_Email.setBounds(546, 217, 106, 17);
+        lbl_Email.setBounds(546, 217, 198, 17);
         contentPane.add(lbl_Email);
         
         lbl_Dni = new JLabel("");
-        lbl_Dni.setBounds(546, 276, 106, 17);
+        lbl_Dni.setBounds(546, 276, 198, 17);
         contentPane.add(lbl_Dni);
         
         lbl_Direccion = new JLabel("");
-        lbl_Direccion.setBounds(546, 335, 106, 17);
+        lbl_Direccion.setBounds(546, 335, 198, 17);
         contentPane.add(lbl_Direccion);
         
         lbl_Telefono1 = new JLabel("");
-        lbl_Telefono1.setBounds(546, 397, 106, 17);
+        lbl_Telefono1.setBounds(546, 397, 198, 17);
         contentPane.add(lbl_Telefono1);
         
         lbl_Telefono2 = new JLabel("");
-        lbl_Telefono2.setBounds(546, 457, 106, 17);
+        lbl_Telefono2.setBounds(546, 457, 198, 17);
         contentPane.add(lbl_Telefono2);
         
         btnVolver = new JButton("VOLVER");
         btnVolver.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		Menu pantallaMenu = new Menu(user);
+        		Menu pantallaMenu = new Menu(user, cliente);
         		pantallaMenu.setVisible(true);
         		dispose();
         	}

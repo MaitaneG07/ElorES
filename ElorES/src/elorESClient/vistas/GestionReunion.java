@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import elorESClient.Cliente;
 import elorESClient.modelo.entities.Users;
 
 public class GestionReunion extends JFrame {
@@ -15,6 +16,8 @@ public class GestionReunion extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private int idProfesor;
+	private Users user;
+	private Cliente cliente;
 
 	/**
 	 * Establece el ID del cliente y su nivel.
@@ -30,8 +33,13 @@ public class GestionReunion extends JFrame {
 	/**
 	 * Create the frame.
 	 * @param user 
+	 * @param cliente 
 	 */
-	public GestionReunion(Users user) {
+	public GestionReunion(Users user, Cliente cliente) {
+		
+		this.user = user;
+		this.cliente = cliente;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();

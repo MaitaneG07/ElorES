@@ -22,7 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import elorESClient.Cliente;
-import elorESClient.modelo.entities.message.Message;
+import elorESClient.modelo.message.Message;
 
 public class Login extends JFrame {
 
@@ -238,7 +238,7 @@ public class Login extends JFrame {
     }
 
     private void abrirMenu() {
-        Menu pantallaMenu = new Menu(respuesta.getUserData());
+        Menu pantallaMenu = new Menu(respuesta.getUserData(), cliente);
         pantallaMenu.setVisible(true);
         dispose();
     }

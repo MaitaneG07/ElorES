@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import elorESClient.Cliente;
 import elorESClient.modelo.entities.Users;
 
 public class ConsultaHorario extends JFrame {
@@ -25,6 +26,8 @@ public class ConsultaHorario extends JFrame {
 	private JScrollPane scrollPaneHorario;
 	private DefaultTableModel modeloHorario;
 	private JTable tablaHorario;
+	private Users user;
+	private Cliente cliente;
 
 	/**
 	 * Establece el ID del cliente y su nivel.
@@ -39,9 +42,14 @@ public class ConsultaHorario extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @param cliente 
 	 * @param users 
 	 */
-	public ConsultaHorario(Users user) {
+	public ConsultaHorario(Users user, Cliente cliente) {
+		
+		this.user = user;
+		this.cliente = cliente;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 855, 600);
         contentPane = new JPanel();
@@ -102,10 +110,11 @@ public class ConsultaHorario extends JFrame {
 		scrollPaneHorario.setViewportView(tablaHorario);
 		
 		JButton btnVolver = new JButton();
+		btnVolver.setText("VOLVER");
 		btnVolver.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Menu pantallaMenu = new Menu(user);
+				Menu pantallaMenu = new Menu(user, cliente);
 				pantallaMenu.setVisible(true);
 				dispose();
 			}
