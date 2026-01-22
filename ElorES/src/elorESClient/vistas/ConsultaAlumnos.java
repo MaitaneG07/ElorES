@@ -48,17 +48,13 @@ public class ConsultaAlumnos extends JFrame {
 	private Users user;
 	private Message respuesta;
 	private Cliente cliente;
-
-	/**
-	 * Establece el ID del cliente y su nivel.
-	 * 
-	 * @param idCliente ID único del cliente
-	 * @param nivel     Nivel de experiencia del cliente
-	 */
-	public void setIdProfesor(int idProfesor) {
-		this.idProfesor = idProfesor;
-		System.out.println("Seteando ID Profesor: " + idProfesor);
-	}
+	private JLabel lblImagenAlumno;
+	private Integer cicloFiltro = null;
+	private Integer cursoFiltro = null;
+	private Integer cicloSeleccionado;
+	private Integer cursoSeleccionado;
+	private JMenuItem menu1;
+	private JMenuItem menu2;
 
 	/**
 	 * Create the frame.
@@ -138,15 +134,9 @@ public class ConsultaAlumnos extends JFrame {
 			}
 		};
 
-		// AQUI MOSTRAREMOS LA IMAGEN DEL ALUMNO SELECCIONADO
-//        JLabel lblImagenAlumno = new JLabel();
-//        lblImagenAlumno.setBounds(10, 371, 131, 110);
-//
-//        ImageIcon iconoAlumno = new ImageIcon(getClass().getResource());
-//        Image imgage = icon.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
-//        lblImagenAlumno.setIcon(new ImageIcon(img));
-//
-//        contentPane.add(lblImagenAlumno);
+		lblImagenAlumno = new JLabel();
+		lblImagenAlumno.setBounds(10, 371, 131, 110);
+		contentPane.add(lblImagenAlumno);
 
 		modeloDetallesAlumno.addColumn("id");
 		modeloDetallesAlumno.addColumn("Nombre");
@@ -180,31 +170,37 @@ public class ConsultaAlumnos extends JFrame {
 		menuDAM = new JMenuItem("DAM");
 		popupMenuCiclo.add(menuDAM);
 		menuDAM.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "DAM");
+			cicloSeleccionado = 1;
+			actualizarTablaAlumnos(modeloAlumnos, 1, null);
 		});
 
 		menuDAW = new JMenuItem("DAW");
 		popupMenuCiclo.add(menuDAW);
 		menuDAW.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "DAW");
+			cicloSeleccionado = 2;
+			actualizarTablaAlumnos(modeloAlumnos, 2, null);
 		});
 
 		menuOTROS = new JMenuItem("OTROS");
 		popupMenuCiclo.add(menuOTROS);
 		menuOTROS.addActionListener(e -> {
-//			actualizarTablaAlumnos("OTROS");
+		    cicloFiltro = null;
+		    cursoFiltro = null;
+			actualizarTablaAlumnos(modeloAlumnos, 3, null);
 		});
 
 		menuASIR = new JMenuItem("ASIR");
 		popupMenuCiclo.add(menuASIR);
 		menuASIR.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "ASIR");
+			cicloSeleccionado = 4;
+			actualizarTablaAlumnos(modeloAlumnos, 4, null);
 		});
 
 		menuSMR = new JMenuItem("SMR");
 		popupMenuCiclo.add(menuSMR);
 		menuSMR.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "SMR");
+			cicloSeleccionado = 5;
+			actualizarTablaAlumnos(modeloAlumnos, 5, null);
 		});
 
 		btnCiclo.addActionListener(e -> {
@@ -220,33 +216,18 @@ public class ConsultaAlumnos extends JFrame {
 
 		popupMenuCurso = new JPopupMenu();
 
-		// Hay 5 ids de ciclo
-		// Este uno es el id 1 de ciclo
-		menuDAM = new JMenuItem("1");
-		popupMenuCurso.add(menuDAM);
-		menuDAM.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "1");
+		menu1 = new JMenuItem("1");
+		popupMenuCurso.add(menu1);
+		menu1.addActionListener(e -> {
+			cursoSeleccionado = 1;
+			actualizarTablaAlumnos(modeloAlumnos, null, 1);
 		});
 
-		// Este uno es el id 2 de ciclo
-		menuDAW = new JMenuItem("1");
-		popupMenuCurso.add(menuDAW);
-		menuDAW.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "1");
-		});
-
-		// Este dos es el id 3 de ciclo
-		menuOTROS = new JMenuItem("2");
-		popupMenuCurso.add(menuOTROS);
-		menuOTROS.addActionListener(e -> {
-//			actualizarTablaAlumnos("2");
-		});
-
-		// Este dos es el id 4 de ciclo
-		menuASIR = new JMenuItem("2");
-		popupMenuCurso.add(menuASIR);
-		menuASIR.addActionListener(e -> {
-//			actualizarTablaAlumnos(modeloAlumnos, "2");
+		menu2 = new JMenuItem("2");
+		popupMenuCurso.add(menu2);
+		menu2.addActionListener(e -> {
+			cursoSeleccionado = 2;
+			actualizarTablaAlumnos(modeloAlumnos, null, 4);
 		});
 
 		btnCurso.addActionListener(e -> {
@@ -269,7 +250,7 @@ public class ConsultaAlumnos extends JFrame {
 		btnVolver.setBounds(727, 514, 102, 40);
 		contentPane.add(btnVolver);
 
-		actualizarTablaAlumnos(modeloAlumnos, null);
+		actualizarTablaAlumnos(modeloAlumnos, null, null);
 
 	}
 
@@ -284,13 +265,15 @@ public class ConsultaAlumnos extends JFrame {
 				for (Users alumno : listStudents) {
 					if (alumno.getId().equals(idAlumno)) {
 						modeloDetallesAlumno
-								.addRow(new Object[] { 
-										alumno.getId(), 
-										alumno.getNombre(), 
-										alumno.getApellidos(),
-										alumno.getEmail(),
-										alumno.getTelefono1(),
-										alumno.getTelefono2()});
+								.addRow(new Object[] { alumno.getId(), alumno.getNombre(), alumno.getApellidos(),
+										alumno.getEmail(), alumno.getTelefono1(), alumno.getTelefono2() });
+						if (user.getArgazkiaUrl() != null) {
+							ImageIcon foto = new ImageIcon(getClass().getResource(user.getArgazkiaUrl()));
+							Image imagen = foto.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
+							lblImagenAlumno.setIcon(new ImageIcon(imagen));
+						} else {
+							lblImagenAlumno.setText("No tiene foto");
+						}
 					}
 				}
 			} else {
@@ -301,25 +284,28 @@ public class ConsultaAlumnos extends JFrame {
 		}
 	}
 
-	private void actualizarTablaAlumnos(DefaultTableModel modeloAlumnos, Object object) {
-		modeloAlumnos.setRowCount(0);
+	private void actualizarTablaAlumnos(DefaultTableModel modeloAlumnos, Integer ciclo, Integer curso) {
+		 modeloAlumnos.setRowCount(0);
 
-		respuesta = cliente.getAllStudentsById(this.user.getId());
+		 respuesta = cliente.getAllStudentsById(this.user.getId());
 
-		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
-			List<Users> listStudents = respuesta.getUsersList();
-			if (listStudents != null && !listStudents.isEmpty()) {
-				for (Users alumno : listStudents) {
-					modeloAlumnos.addRow(new Object[] { 
-							alumno.getId(), 
-							alumno.getNombre(), 
-							alumno.getApellidos()});
-				}
-			} else {
-				System.out.println("No se encontraron alumnos");
-			}
-		} else {
-			System.err.println("Error al obtener alumnos: " + respuesta.getMensaje());
-		}
+		    if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+		        List<Users> alumnos = respuesta.getUsersList();
+
+		        if (alumnos != null) {
+		            for (Users alumno : alumnos) {
+		                modeloAlumnos.addRow(new Object[] {
+		                    alumno.getId(),
+		                    alumno.getNombre(),
+		                    alumno.getApellidos()
+		                });
+		            }
+		        }
+		    } else {
+		        System.err.println("Error al obtener alumnos");
+		    }
+
+		    tablaAlumnos.revalidate();
+		    tablaAlumnos.repaint();
 	}
 }

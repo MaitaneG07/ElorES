@@ -44,8 +44,8 @@ public class Cliente {
      */
     public boolean conectar() {
     	try {
-//            socket = new Socket(ipServidor, puerto);
-            socket = new Socket("localhost", puerto);
+            socket = new Socket(ipServidor, puerto);
+//            socket = new Socket("localhost", puerto);
             socket.setSoTimeout(5000); 
             
             System.out.println("Conectado al servidor");
@@ -162,6 +162,70 @@ public class Cliente {
             e.printStackTrace();
         }
     	return null;
+    }
+    
+    /**
+     * NUEVO: Obtiene alumnos de un profesor con filtros opcionales de ciclo y curso
+     * @param idProfesor ID del profesor
+     * @param cicloId ID del ciclo (null para todos)
+     * @param curso Número de curso (null para todos)
+     * @return Message con la lista de alumnos filtrados
+     */
+    public Message getStudentsByFilters(int idProfesor, Integer cicloId, Integer curso) {
+        try {
+            Message mensajeFiltrado = Message.createListStudentsByProfesorAndFilters(
+                idProfesor, 
+                cicloId, 
+                curso
+            );
+            
+            String jsonFiltrado = gson.toJson(mensajeFiltrado);
+            
+            // Log detallado de los filtros
+            StringBuilder logFiltros = new StringBuilder();
+            logFiltros.append("[GET_ALUMNOS_FILTRADOS] Profesor: ").append(idProfesor);
+            
+            if (cicloId != null) {
+                logFiltros.append(", Ciclo: ").append(cicloId);
+            } else {
+                logFiltros.append(", Ciclo: TODOS");
+            }
+            
+            if (curso != null) {
+                logFiltros.append(", Curso: ").append(curso);
+            } else {
+                logFiltros.append(", Curso: TODOS");
+            }
+            
+            System.out.println(logFiltros.toString());
+            
+            enviarMensaje(jsonFiltrado);
+            
+            String respuestaJson = recibirMensaje();
+            
+            if (respuestaJson != null) {
+                Message respuesta = gson.fromJson(respuestaJson, Message.class);
+                
+                if ("OK".equals(respuesta.getEstado())) {
+                    System.out.println("[EXITOSO] " + respuesta.getMensaje());
+                    if (respuesta.getUsersList() != null) {
+                        System.out.println("[DATOS] Se recibieron " + 
+                            respuesta.getUsersList().size() + " alumnos con los filtros aplicados.");
+                    } else {
+                        System.out.println("[DATOS] No se recibieron alumnos.");
+                    }
+                } else {
+                    System.out.println("[FALLIDO] " + respuesta.getMensaje());
+                }
+                
+                return respuesta;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error obteniendo alumnos filtrados: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
     
     /**

@@ -104,7 +104,7 @@ public class Login extends JFrame {
         btnReconectar.setBackground(new Color(65, 105, 225));
         btnReconectar.setForeground(Color.WHITE);
         btnReconectar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        btnReconectar.setBounds(333, 370, 179, 30);
+        btnReconectar.setBounds(333, 370, 179, 35);
         btnReconectar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 conectarAlServidor(); // CORREGIDO
@@ -147,8 +147,9 @@ public class Login extends JFrame {
     private void conectarAlServidor() {
         lblEstado.setText("Estado: Conectando...");
         
-//        String ipServidor = "10.5.104.31";
-        String ipServidor = "localhost";
+//        String ipServidor = "10.5.104.32";
+        String ipServidor = "10.5.104.31";
+//        String ipServidor = "localhost";
         int puerto = 8080;
         
         new Thread(() -> {

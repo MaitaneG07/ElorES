@@ -10,11 +10,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import elorESClient.Cliente;
 import elorESClient.modelo.entities.Users;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Menu extends JFrame {
 
@@ -25,21 +28,9 @@ public class Menu extends JFrame {
 	private JButton btnHorario;
 	private JButton btnOtrosHorarios;
 	private JButton btnReuniones;
-	private JButton btnSalir;
 	private int idProfesor;
 	private Users user;
 	private Cliente cliente;
-
-	/**
-	 * Establece el ID del cliente y su nivel.
-	 * 
-	 * @param idCliente ID único del cliente
-	 * @param nivel     Nivel de experiencia del cliente
-	 */
-	public void setIdProfesor(int idProfesor) {
-		this.idProfesor = idProfesor;
-		System.out.println("Seteando ID Profesor: " + idProfesor);
-	}
 	
 	/**
 	 * Create the frame.
@@ -137,18 +128,23 @@ public class Menu extends JFrame {
         });
         contentPane.add(btnReuniones);
         
-        btnSalir = new JButton("Salir del Programa");
-        btnSalir.setBackground(new Color(65, 105, 225));
-        btnSalir.setForeground(Color.WHITE);
-        btnSalir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        btnSalir.setBounds(333, 570, 179, 10);
-        btnSalir.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Login pantallaLogin = new Login();
-                pantallaLogin.setVisible(true);
-                dispose();
-            }
+        JButton btnSalir = new JButton("SALIR");
+        btnSalir.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		JOptionPane.showMessageDialog(Menu.this,
+                        "Será desconectado del servidor",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE);
+        		cliente.desconectar();
+        		Login pantallaLogin = new Login();
+        		pantallaLogin.setVisible(true);
+        		dispose();
+        	}
         });
+        btnSalir.setBackground(new Color(255, 0, 0));
+        btnSalir.setForeground(Color.WHITE);
+        btnSalir.setBounds(708, 502, 121, 48);
         contentPane.add(btnSalir);
 	}
 }

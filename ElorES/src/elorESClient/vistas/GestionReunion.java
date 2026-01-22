@@ -18,17 +18,6 @@ public class GestionReunion extends JFrame {
 	private int idProfesor;
 	private Users user;
 	private Cliente cliente;
-
-	/**
-	 * Establece el ID del cliente y su nivel.
-	 * 
-	 * @param idCliente ID único del cliente
-	 * @param nivel     Nivel de experiencia del cliente
-	 */
-	public void setIdProfesor(int idProfesor) {
-		this.idProfesor = idProfesor;
-		System.out.println("Seteando ID Profesor: " + idProfesor);
-	}
 	
 	/**
 	 * Create the frame.
