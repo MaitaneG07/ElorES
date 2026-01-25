@@ -44,8 +44,8 @@ public class Cliente {
      */
     public boolean conectar() {
     	try {
-            socket = new Socket(ipServidor, puerto);
-//            socket = new Socket("localhost", puerto);
+//            socket = new Socket(ipServidor, puerto);
+            socket = new Socket("localhost", puerto);
             socket.setSoTimeout(5000); 
             
             System.out.println("Conectado al servidor");
@@ -226,6 +226,38 @@ public class Cliente {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public Message getHorario(int idProfesor) {
+    	try {
+            Message mensajeHorario = Message.createHorario(idProfesor);
+            
+            String jsonHorario = gson.toJson(mensajeHorario);
+            System.out.println("[GET_HORARIO_PROFESOR] Solicitando el horario del profesor: " + idProfesor);
+            
+            enviarMensaje(jsonHorario);
+            
+            String respuestaJson = recibirMensaje();
+            
+            if (respuestaJson != null) {
+                Message respuesta = gson.fromJson(respuestaJson, Message.class);
+                if ("OK".equals(respuesta.getEstado())) {
+                    System.out.println("[EXITOSO] " + respuesta.getMensaje());
+                    if(respuesta.getUsersList() != null) {
+                    	System.out.println("[DATOS] Se recibió el mensaje");
+                    }
+                } else {
+                    System.out.println("[FALLIDO] " + respuesta.getMensaje());
+                }
+                
+                return respuesta;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error obteniendo horario: " + e.getMessage());
+            e.printStackTrace();
+        }
+    	return null;
     }
     
     /**
