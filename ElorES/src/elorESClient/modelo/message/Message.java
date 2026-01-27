@@ -3,8 +3,8 @@ package elorESClient.modelo.message;
 import java.util.List;
 
 import elorESClient.modelo.entities.Horarios;
-import elorESClient.modelo.entities.Reuniones;
 import elorESClient.modelo.entities.Users;
+
 
 public class Message {
 	private String tipo;
@@ -15,7 +15,6 @@ public class Message {
 	private Users userData;
 	private List<Users> usersList;
 	private List<Horarios> horarioList;
-	private List<Reuniones> reunionesList;
 	private Integer idProfesor;
 	private Integer cicloId;
 	private Integer curso;
@@ -40,45 +39,12 @@ public class Message {
 		return msg;
 	}
 
-	// Método para solicitar lista de profesores
-	public static Message createListTeachers() {
-		Message msg = new Message();
-		msg.tipo = "GET_PROFESORES";
-		return msg;
-	}
-
-	// Método para solicitar lista de alumnos filtrados
 	public static Message createListStudentsByProfesorAndFilters(int idProfesor, Integer cicloId, Integer curso) {
 		Message msg = new Message();
 		msg.tipo = "GET_ALUMNOS_FILTRADOS";
 		msg.idProfesor = idProfesor;
 		msg.cicloId = cicloId;
 		msg.curso = curso;
-		return msg;
-	}
-
-	// Método para solicitar lista de profesores filtrados
-	public static Message createListTeachersByFilters(Integer cicloId, Integer curso) {
-		Message msg = new Message();
-		msg.tipo = "GET_PROFESORES_FILTRADOS";
-		msg.cicloId = cicloId;
-		msg.curso = curso;
-		return msg;
-	}
-
-	// Metodo para solicitar lista de horarios de un profesor
-	public static Message createHorario(Integer idProfesor) {
-		Message msg = new Message();
-		msg.tipo = "GET_HORARIO_PROFESOR";
-		msg.idProfesor = idProfesor;
-		return msg;
-	}
-
-	// Metodo para solicitar lista de reuniones de un profesor
-	public static Message createGetReunionesProfesor(int idProfesor) {
-		Message msg = new Message();
-		msg.setTipo("GET_REUNIONES_PROFESOR");
-		msg.setIdProfesor(idProfesor);
 		return msg;
 	}
 
@@ -110,8 +76,7 @@ public class Message {
 		msg.usersList = usersList;
 		return msg;
 	}
-
-	// Constructor para respuestas con lista de horarios
+	
 	public static Message crearRespuestaConListaHorarios(String tipo, String estado, String mensaje,
 			List<Horarios> listHorarios) {
 		Message msg = new Message();
@@ -121,18 +86,14 @@ public class Message {
 		msg.horarioList = listHorarios;
 		return msg;
 	}
-
-	// Constructor para respuestas con lista de reuniones
-	public static Message crearRespuestaConListaReuniones(String tipo, String estado, String mensaje,
-			List<Reuniones> listReuniones) {
+	
+	public static Message createHorario(Integer idProfesor) {
 		Message msg = new Message();
-		msg.tipo = tipo;
-		msg.estado = estado;
-		msg.mensaje = mensaje;
-		msg.reunionesList = listReuniones;
+		msg.tipo = "GET_HORARIO_PROFESOR";
+		msg.idProfesor = idProfesor;
 		return msg;
 	}
-
+	
 	// Getters y Setters
 	public String getTipo() {
 		return tipo;
@@ -140,14 +101,6 @@ public class Message {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-
-	public List<Reuniones> getReunionesList() {
-		return reunionesList;
-	}
-
-	public void setReunionesList(List<Reuniones> reunionesList) {
-		this.reunionesList = reunionesList;
 	}
 
 	public String getUsuario() {
@@ -197,11 +150,11 @@ public class Message {
 	public void setHorarioList(List<Horarios> horarioList) {
 		this.horarioList = horarioList;
 	}
-
+	
 	public List<Horarios> getHorarioList() {
 		return horarioList;
 	}
-
+	
 	public void setUsersList(List<Users> usersList) {
 		this.usersList = usersList;
 	}

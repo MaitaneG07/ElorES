@@ -178,6 +178,7 @@ public class Cliente {
             String jsonFilterStudents = gson.toJson(mensajeFilterStudents);
             System.out.println("[GET_ALUMNOS_FILTRADOS] Solicitando alumnos del profesor: " + idProfesor + " filtrados por: " + cicloId + " y " + curso);
             
+            // Log detallado de los filtros
             StringBuilder logFiltros = new StringBuilder();
             logFiltros.append("[GET_ALUMNOS_FILTRADOS] Profesor: ").append(idProfesor);
             
@@ -207,72 +208,6 @@ public class Cliente {
         return null;
     }
     
-    /**
-     * NUEVO: Obtiene profesores filtros opcionales de ciclo y curso
-     * @param cicloId ID del ciclo (null para todos)
-     * @param curso Número de curso (null para todos)
-     * @return Message con la lista de profesores filtrados
-     */
-    public Message getTeachersByFilters(Integer cicloId, Integer curso) {
-        try {
-            Message mensajeFiltrado = Message.createListTeachersByFilters(
-                cicloId, 
-                curso
-            );
-            
-            String jsonFiltrado = gson.toJson(mensajeFiltrado);
-            
-            StringBuilder logFiltros = new StringBuilder();
-            logFiltros.append("[GET_PROFESORES_FILTRADOS]");
-            
-            if (cicloId != null) {
-                logFiltros.append(", Ciclo: ").append(cicloId);
-            } else {
-                logFiltros.append(", Ciclo: TODOS");
-            }
-            
-            if (curso != null) {
-                logFiltros.append(", Curso: ").append(curso);
-            } else {
-                logFiltros.append(", Curso: TODOS");
-            }
-            
-            System.out.println(logFiltros.toString());
-            
-            enviarMensaje(jsonFiltrado);
-            
-            String respuestaJson = recibirMensaje();
-            
-            if (respuestaJson != null) {
-                Message respuesta = gson.fromJson(respuestaJson, Message.class);
-                
-                if ("OK".equals(respuesta.getEstado())) {
-                    System.out.println("[EXITOSO] " + respuesta.getMensaje());
-                    if (respuesta.getUsersList() != null) {
-                        System.out.println("[DATOS] Se recibieron " + 
-                            respuesta.getUsersList().size() + " profesores con los filtros aplicados.");
-                    } else {
-                        System.out.println("[DATOS] No se recibieron profesores.");
-                    }
-                } else {
-                    System.out.println("[FALLIDO] " + respuesta.getMensaje());
-                }
-                
-                return respuesta;
-            }
-            
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error obteniendo alumnos filtrados: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    /**
-     * Obtiene el horario de un profesor
-     * @param idProfesor
-     * @return horario del profesor
-     */
     public Message getHorario(int idProfesor) {
     	try {
             Message mensajeHorario = Message.createHorario(idProfesor);
@@ -303,70 +238,6 @@ public class Cliente {
             e.printStackTrace();
         }
     	return null;
-    }
-    
-    /**
-     * Obtiene todos los profesores
-     * @return lista de profesores
-     */
-    public Message getAllTeachers() {
-    	try {
-            Message mensajeAllTeachers = Message.createListTeachers();
-            
-            String jsonAllTeachers = gson.toJson(mensajeAllTeachers);
-            System.out.println("[GET_PROFESORES] Solicitando profesores.");
-            
-            enviarMensaje(jsonAllTeachers);
-            
-            String respuestaJson = recibirMensaje();
-            
-            if (respuestaJson != null) {
-                Message respuesta = gson.fromJson(respuestaJson, Message.class);
-                if ("OK".equals(respuesta.getEstado())) {
-                    System.out.println("[EXITOSO] " + respuesta.getMensaje());
-                    if(respuesta.getUsersList() != null) {
-                    	System.out.println("[DATOS] Se recibieron " + respuesta.getUsersList().size() + " profesores.");
-                    }
-                } else {
-                    System.out.println("[FALLIDO] " + respuesta.getMensaje());
-                }
-                
-                return respuesta;
-            }
-            
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error obteniendo profesores: " + e.getMessage());
-            e.printStackTrace();
-        }
-    	return null;
-    }
-    
-    /**
-     * Obtiene las reuniones de un profesor
-     * @param idProfesor
-     * @return listado de reuniones
-     */
-    public Message getReunionesProfesor(int idProfesor) {
-        try {
-            Message mensaje = Message.createGetReunionesProfesor(idProfesor);
-            String json = gson.toJson(mensaje);
-            
-            System.out.println("[GET_REUNIONES] Pidiendo reuniones del profesor: " + idProfesor);
-            
-            enviarMensaje(json);
-            String respuestaJson = recibirMensaje();
-            
-            if (respuestaJson != null) {
-                Message respuesta = gson.fromJson(respuestaJson, Message.class);
-                System.out.println("[RESPUESTA] " + respuesta.getMensaje());
-                return respuesta;
-            }
-            
-        } catch (Exception e) {
-            System.err.println("[ERROR] " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
     }
     
     /**
