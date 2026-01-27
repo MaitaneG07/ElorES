@@ -172,46 +172,23 @@ public class Cliente {
      * @return Message con la lista de alumnos filtrados
      */
     public Message getStudentsByFilters(int idProfesor, Integer cicloId, Integer curso) {
-        try {
-            Message mensajeFiltrado = Message.createListStudentsByProfesorAndFilters(
-                idProfesor, 
-                cicloId, 
-                curso
-            );
+    	try {
+            Message mensajeFilterStudents = Message.createListStudentsByProfesorAndFilters(idProfesor, cicloId, curso);
             
-            String jsonFiltrado = gson.toJson(mensajeFiltrado);
+            String jsonFilterStudents = gson.toJson(mensajeFilterStudents);
+            System.out.println("[GET_ALUMNOS_FILTRADOS] Solicitando alumnos del profesor: " + idProfesor + " filtrados por: " + cicloId + " y " + curso);
             
             StringBuilder logFiltros = new StringBuilder();
             logFiltros.append("[GET_ALUMNOS_FILTRADOS] Profesor: ").append(idProfesor);
-            
-            if (cicloId != null) {
-                logFiltros.append(", Ciclo: ").append(cicloId);
-            } else {
-                logFiltros.append(", Ciclo: TODOS");
-            }
-            
-            if (curso != null) {
-                logFiltros.append(", Curso: ").append(curso);
-            } else {
-                logFiltros.append(", Curso: TODOS");
-            }
-            
-            System.out.println(logFiltros.toString());
-            
-            enviarMensaje(jsonFiltrado);
             
             String respuestaJson = recibirMensaje();
             
             if (respuestaJson != null) {
                 Message respuesta = gson.fromJson(respuestaJson, Message.class);
-                
                 if ("OK".equals(respuesta.getEstado())) {
                     System.out.println("[EXITOSO] " + respuesta.getMensaje());
-                    if (respuesta.getUsersList() != null) {
-                        System.out.println("[DATOS] Se recibieron " + 
-                            respuesta.getUsersList().size() + " alumnos con los filtros aplicados.");
-                    } else {
-                        System.out.println("[DATOS] No se recibieron alumnos.");
+                    if(respuesta.getUsersList() != null) {
+                    	System.out.println("[DATOS] Se recibieron " + respuesta.getUsersList().size() + " alumnos.");
                     }
                 } else {
                     System.out.println("[FALLIDO] " + respuesta.getMensaje());
@@ -221,8 +198,11 @@ public class Cliente {
             }
             
         } catch (Exception e) {
-            System.err.println("[ERROR] Error obteniendo alumnos filtrados: " + e.getMessage());
             e.printStackTrace();
+            Message error = new Message();
+            error.setEstado("ERROR");
+            error.setMensaje("Error al obtener alumnos filtrados: " + e.getMessage());
+            return error;
         }
         return null;
     }
