@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -75,6 +76,13 @@ public class ConsultaAlumnos extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		JLabel lblTitulo = new JLabel("CONSULTAR ALUMNOS");
+		lblTitulo.setForeground(new Color(65, 105, 225));
+		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 26));
+		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitulo.setBounds(263, 11, 307, 50);
+		contentPane.add(lblTitulo);
+
 		JLabel lblLogo = new JLabel();
 		lblLogo.setBounds(10, 11, 131, 107);
 
@@ -101,6 +109,10 @@ public class ConsultaAlumnos extends JFrame {
 		modeloAlumnos.addColumn("Apellidos");
 
 		tablaAlumnos = new JTable(modeloAlumnos);
+		tablaAlumnos.setFont(new Font("Arial", Font.PLAIN, 11));
+		tablaAlumnos.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+		tablaAlumnos.getTableHeader().setBackground(new Color(65, 105, 225));
+		tablaAlumnos.getTableHeader().setForeground(Color.WHITE);
 		tablaAlumnos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		tablaAlumnos.getColumnModel().getColumn(0).setMinWidth(0);
 		tablaAlumnos.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -113,7 +125,7 @@ public class ConsultaAlumnos extends JFrame {
 				if (e.getClickCount() == 1 && tablaAlumnos.getSelectedRow() != -1) {
 					int selectedRow = tablaAlumnos.getSelectedRow();
 					int idAlumno = (int) tablaAlumnos.getValueAt(selectedRow, 0);
-					actualizarTablaDetallesAlumno(modeloDetallesAlumno, idAlumno);
+					actualizarTablaDetallesAlumno(idAlumno);
 
 				}
 			}
@@ -146,61 +158,64 @@ public class ConsultaAlumnos extends JFrame {
 		modeloDetallesAlumno.addColumn("Telefono 2");
 
 		tablaDetallesAlumno = new JTable(modeloDetallesAlumno);
+		tablaDetallesAlumno.setFont(new Font("Arial", Font.PLAIN, 11));
+		tablaDetallesAlumno.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+		tablaDetallesAlumno.getTableHeader().setBackground(new Color(65, 105, 225));
+		tablaDetallesAlumno.getTableHeader().setForeground(Color.WHITE);
 		tablaDetallesAlumno.getColumnModel().getColumn(0).setMinWidth(0);
 		tablaDetallesAlumno.getColumnModel().getColumn(0).setMaxWidth(0);
 		tablaDetallesAlumno.getColumnModel().getColumn(0).setWidth(0);
 		scrollPaneDetallesAlumno.setViewportView(tablaDetallesAlumno);
 
-		JLabel lblTitulo = new JLabel("CONSULTAR ALUMNOS");
-		lblTitulo.setForeground(new Color(65, 105, 225));
-		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 26));
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setBounds(263, 11, 307, 79);
-		contentPane.add(lblTitulo);
-
 		btnCiclo = new JButton();
 		btnCiclo.setText("Ciclo");
 		btnCiclo.setBackground(new Color(65, 105, 225));
 		btnCiclo.setForeground(Color.WHITE);
-		btnCiclo.setBounds(727, 78, 102, 40);
+		btnCiclo.setBounds(727, 70, 102, 35);
 		contentPane.add(btnCiclo);
 
 		popupMenuCiclo = new JPopupMenu();
 
-		menuDAM = new JMenuItem("DAM");
+		JMenuItem menuDAM = new JMenuItem("DAM");
 		popupMenuCiclo.add(menuDAM);
 		menuDAM.addActionListener(e -> {
-			cicloSeleccionado = 1;
-			actualizarTablaAlumnos(modeloAlumnos, 1, null);
+			cicloFiltro = 1;
+			actualizarTablaAlumnos();
 		});
 
-		menuDAW = new JMenuItem("DAW");
+		JMenuItem menuDAW = new JMenuItem("DAW");
 		popupMenuCiclo.add(menuDAW);
 		menuDAW.addActionListener(e -> {
-			cicloSeleccionado = 2;
-			actualizarTablaAlumnos(modeloAlumnos, 2, null);
+			cicloFiltro = 2;
+			actualizarTablaAlumnos();
 		});
 
-		menuOTROS = new JMenuItem("OTROS");
+		JMenuItem menuOTROS = new JMenuItem("OTROS");
 		popupMenuCiclo.add(menuOTROS);
 		menuOTROS.addActionListener(e -> {
-		    cicloFiltro = null;
-		    cursoFiltro = null;
-			actualizarTablaAlumnos(modeloAlumnos, 3, null);
+			cicloFiltro = 3;
+			actualizarTablaAlumnos();
 		});
 
-		menuASIR = new JMenuItem("ASIR");
+		JMenuItem menuASIR = new JMenuItem("ASIR");
 		popupMenuCiclo.add(menuASIR);
 		menuASIR.addActionListener(e -> {
-			cicloSeleccionado = 4;
-			actualizarTablaAlumnos(modeloAlumnos, 4, null);
+			cicloFiltro = 4;
+			actualizarTablaAlumnos();
 		});
 
-		menuSMR = new JMenuItem("SMR");
+		JMenuItem menuSMR = new JMenuItem("SMR");
 		popupMenuCiclo.add(menuSMR);
 		menuSMR.addActionListener(e -> {
-			cicloSeleccionado = 5;
-			actualizarTablaAlumnos(modeloAlumnos, 5, null);
+			cicloFiltro = 5;
+			actualizarTablaAlumnos();
+		});
+
+		JMenuItem menuTodosCiclos = new JMenuItem("Todos");
+		popupMenuCiclo.add(menuTodosCiclos);
+		menuTodosCiclos.addActionListener(e -> {
+			cicloFiltro = null;
+			actualizarTablaAlumnos();
 		});
 
 		btnCiclo.addActionListener(e -> {
@@ -208,35 +223,52 @@ public class ConsultaAlumnos extends JFrame {
 		});
 
 		btnCurso = new JButton();
-		btnCurso.setText("Curso");
+		btnCurso = new JButton("Curso");
 		btnCurso.setBackground(new Color(65, 105, 225));
 		btnCurso.setForeground(Color.WHITE);
-		btnCurso.setBounds(612, 78, 102, 40);
+		btnCurso.setBounds(612, 70, 102, 35);
 		contentPane.add(btnCurso);
 
 		popupMenuCurso = new JPopupMenu();
 
-		menu1 = new JMenuItem("1");
+		JMenuItem menu1 = new JMenuItem("1º");
 		popupMenuCurso.add(menu1);
 		menu1.addActionListener(e -> {
-			cursoSeleccionado = 1;
-			actualizarTablaAlumnos(modeloAlumnos, null, 1);
+			cursoFiltro = 1;
+			actualizarTablaAlumnos();
 		});
 
-		menu2 = new JMenuItem("2");
+		JMenuItem menu2 = new JMenuItem("2º");
 		popupMenuCurso.add(menu2);
 		menu2.addActionListener(e -> {
-			cursoSeleccionado = 2;
-			actualizarTablaAlumnos(modeloAlumnos, null, 4);
+			cursoFiltro = 2;
+			actualizarTablaAlumnos();
+		});
+
+		JMenuItem menuTodosCursos = new JMenuItem("Todos");
+		popupMenuCurso.add(menuTodosCursos);
+		menuTodosCursos.addActionListener(e -> {
+			cursoFiltro = null;
+			actualizarTablaAlumnos();
 		});
 
 		btnCurso.addActionListener(e -> {
 			popupMenuCurso.show(btnCurso, 0, btnCurso.getHeight());
-
 		});
 
-		JButton btnVolver = new JButton();
-		btnVolver.setText("VOLVER");
+		JButton btnLimpiar = new JButton("Limpiar");
+		btnLimpiar.setBackground(new Color(220, 220, 220));
+		btnLimpiar.setForeground(Color.BLACK);
+		btnLimpiar.setBounds(497, 70, 102, 35);
+		btnLimpiar.addActionListener(e -> {
+			cicloFiltro = null;
+			cursoFiltro = null;
+			actualizarTablaAlumnos();
+		});
+
+		contentPane.add(btnLimpiar);
+
+		JButton btnVolver = new JButton("VOLVER");
 		btnVolver.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -250,14 +282,17 @@ public class ConsultaAlumnos extends JFrame {
 		btnVolver.setBounds(727, 514, 102, 40);
 		contentPane.add(btnVolver);
 
-		actualizarTablaAlumnos(modeloAlumnos, null, null);
+		actualizarTablaAlumnos();
 
 	}
 
-	protected void actualizarTablaDetallesAlumno(DefaultTableModel modeloDetallesAlumno, int idAlumno) {
+	/**
+	 * Actualiza la tabla de detalles del alumno seleccionado
+	 */
+	private void actualizarTablaDetallesAlumno(int idAlumno) {
 		modeloDetallesAlumno.setRowCount(0);
 
-		respuesta = cliente.getAllStudentsById(this.user.getId());
+		respuesta = cliente.getStudentsByFilters(user.getId(), cicloFiltro, cursoFiltro);
 
 		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
 			List<Users> listStudents = respuesta.getUsersList();
@@ -267,45 +302,62 @@ public class ConsultaAlumnos extends JFrame {
 						modeloDetallesAlumno
 								.addRow(new Object[] { alumno.getId(), alumno.getNombre(), alumno.getApellidos(),
 										alumno.getEmail(), alumno.getTelefono1(), alumno.getTelefono2() });
-						if (user.getArgazkiaUrl() != null) {
-							ImageIcon foto = new ImageIcon(getClass().getResource(user.getArgazkiaUrl()));
-							Image imagen = foto.getImage().getScaledInstance(131, 107, Image.SCALE_SMOOTH);
-							lblImagenAlumno.setIcon(new ImageIcon(imagen));
+
+						if (alumno.getArgazkiaUrl() != null) {
+							try {
+								ImageIcon foto = new ImageIcon(getClass().getResource(alumno.getArgazkiaUrl()));
+								Image imagen = foto.getImage().getScaledInstance(131, 110, Image.SCALE_SMOOTH);
+								lblImagenAlumno.setIcon(new ImageIcon(imagen));
+							} catch (Exception e) {
+								lblImagenAlumno.setText("Foto no disponible");
+
+							}
 						} else {
-							lblImagenAlumno.setText("No tiene foto");
+							lblImagenAlumno.setText("Sin foto");
 						}
+					} else {
+						System.out.println("No se encontraron alumnos");
 					}
 				}
-			} else {
-				System.out.println("No se encontraron alumnos");
 			}
-		} else {
-			System.err.println("Error al obtener alumnos: " + respuesta.getMensaje());
 		}
 	}
 
-	private void actualizarTablaAlumnos(DefaultTableModel modeloAlumnos, Integer ciclo, Integer curso) {
-		 modeloAlumnos.setRowCount(0);
+	/**
+	 * Actualiza la tabla de alumnos con los filtros actuales
+	 */
+	private void actualizarTablaAlumnos() {
+		modeloAlumnos.setRowCount(0);
+		modeloDetallesAlumno.setRowCount(0);
+		lblImagenAlumno.setIcon(null);
+		lblImagenAlumno.setText("");
 
-		 respuesta = cliente.getAllStudentsById(this.user.getId());
+		System.out.println("[FILTROS] Ciclo: " + cicloFiltro + ", Curso: " + cursoFiltro);
 
-		    if (respuesta != null && "OK".equals(respuesta.getEstado())) {
-		        List<Users> alumnos = respuesta.getUsersList();
+		respuesta = cliente.getStudentsByFilters(user.getId(), cicloFiltro, cursoFiltro);
 
-		        if (alumnos != null) {
-		            for (Users alumno : alumnos) {
-		                modeloAlumnos.addRow(new Object[] {
-		                    alumno.getId(),
-		                    alumno.getNombre(),
-		                    alumno.getApellidos()
-		                });
-		            }
-		        }
-		    } else {
-		        System.err.println("Error al obtener alumnos");
-		    }
+		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+			List<Users> alumnos = respuesta.getUsersList();
 
-		    tablaAlumnos.revalidate();
-		    tablaAlumnos.repaint();
+			if (alumnos != null && !alumnos.isEmpty()) {
+				for (Users alumno : alumnos) {
+					modeloAlumnos.addRow(new Object[] { alumno.getId(), alumno.getNombre(), alumno.getApellidos() });
+				}
+				System.out.println("[ALUMNOS] Cargados " + alumnos.size() + " alumnos");
+			} else {
+				JOptionPane.showMessageDialog(this, "No se encontraron alumnos", "Información",
+						JOptionPane.INFORMATION_MESSAGE);
+
+				System.out.println("[ALUMNOS] No se encontraron alumnos con esos filtros");
+			}
+		} else {
+			JOptionPane.showMessageDialog(this, "Error al cargar la lista de alumnos", "Error",
+					JOptionPane.ERROR_MESSAGE);
+
+			System.err.println("[ERROR] Error al obtener alumnos");
+		}
+
+		tablaAlumnos.revalidate();
+		tablaAlumnos.repaint();
 	}
 }
