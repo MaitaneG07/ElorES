@@ -68,7 +68,7 @@ public class ConsultaAlumnos extends JFrame {
 
 		JLabel lblTitulo = new JLabel("CONSULTAR ALUMNOS");
 		lblTitulo.setForeground(new Color(65, 105, 225));
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 26));
+		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setBounds(263, 11, 307, 50);
 		contentPane.add(lblTitulo);

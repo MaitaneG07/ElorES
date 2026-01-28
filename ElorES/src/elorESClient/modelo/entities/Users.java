@@ -136,4 +136,11 @@ public class Users implements Serializable {
         this.tipos = tipos;
     }
 
+	@Override
+	public String toString() {
+		return nombre + " " + apellidos;
+	}
+    
+    
+
 }

@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 
+import javax.swing.JOptionPane;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -46,8 +48,8 @@ public class Cliente {
 	 */
 	public boolean conectar() {
 		try {
-            socket = new Socket(ipServidor, puerto);
-//			socket = new Socket("localhost", puerto);
+//            socket = new Socket(ipServidor, puerto);
+			socket = new Socket("localhost", puerto);
 			socket.setSoTimeout(5000);
 
 			System.out.println("Conectado al servidor");
@@ -222,6 +224,33 @@ public class Cliente {
 			String json = gson.toJson(mensaje);
 
 			System.out.println("[GET_TEACHERS] Solicitando todos los profesores");
+
+			enviarMensaje(json);
+			String respuestaJson = recibirMensaje();
+
+			if (respuestaJson != null) {
+				Message respuesta = gson.fromJson(respuestaJson, Message.class);
+				System.out.println("[RESPUESTA] " + respuesta.getMensaje());
+				return respuesta;
+			}
+
+		} catch (Exception e) {
+			System.err.println("[ERROR] " + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Obtiene todos los alumnos
+	 * @return lista de alumnos
+	 */
+	public Message getAllStudents() {
+		try {
+			Message mensaje = Message.createListStudents();
+			String json = gson.toJson(mensaje);
+
+			System.out.println("[GET_STUDENTS] Solicitando todos los alumnos");
 
 			enviarMensaje(json);
 			String respuestaJson = recibirMensaje();
@@ -457,6 +486,61 @@ public class Cliente {
 	}
 
 	/**
+	 * Crea la reunion con todos los datos insertados
+	 * @param estado
+	 * @param titulo
+	 * @param asunto
+	 * @param aula
+	 * @param idAlumnoSeleccionado
+	 * @param id
+	 * @return message con una reunion
+	 */
+	public Message createReunion(String estado, String titulo, String asunto, String aula, Integer idAlumnoSeleccionado, LocalDateTime fechaHora,
+			Integer idProfesor) {
+		
+		try {
+			Message mensaje = Message.createReunion(estado, titulo, asunto, aula, idAlumnoSeleccionado, fechaHora, idProfesor);
+
+			String json = gson.toJson(mensaje);
+			System.out.println("[CREAR_REUNION] Creando reunión" + " - Nuevo estado: " + estado);
+
+			enviarMensaje(json);
+
+			String respuestaJson = recibirMensaje();
+
+			if (respuestaJson != null) {
+				Message respuesta = gson.fromJson(respuestaJson, Message.class);
+
+				if ("OK".equals(respuesta.getEstado())) {
+					JOptionPane.showMessageDialog(null,
+                            "Reunión creada correctamente",
+                            "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE);
+					System.out.println("[EXITOSO] " + respuesta.getMensaje());
+				} else {
+					JOptionPane.showMessageDialog(null,
+                            "No se ha podido crear la reunión",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+					System.out.println("[FALLIDO] " + respuesta.getMensaje());
+				}
+
+				return respuesta;
+			}
+
+		} catch (Exception e) {
+			System.err.println("[ERROR] Error al crear reunión: " + e.getMessage());
+			e.printStackTrace();
+
+			Message error = new Message();
+			error.setEstado("ERROR");
+			error.setMensaje("Error de comunicación al crear reunión: " + e.getMessage());
+			return error;
+		}
+		return null;
+	}
+	
+	/**
 	 * Cierra la conexión
 	 */
 	public void desconectar() {
@@ -476,5 +560,4 @@ public class Cliente {
 	public boolean estaConectado() {
 		return socket != null && socket.isConnected() && !socket.isClosed();
 	}
-
 }

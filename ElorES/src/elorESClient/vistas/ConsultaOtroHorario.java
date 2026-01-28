@@ -87,7 +87,7 @@ public class ConsultaOtroHorario extends JFrame {
 		contentPane.add(lblLogo);
 
 		lblTitulo = new JLabel("HORARIOS");
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 27));
+		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		lblTitulo.setForeground(new Color(65, 105, 225));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setBounds(300, 20, 500, 50);

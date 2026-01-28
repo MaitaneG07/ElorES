@@ -72,7 +72,7 @@ public class ConsultaHorario extends JFrame {
 
 		JLabel lblTitulo = new JLabel("MI HORARIO");
 		lblTitulo.setForeground(new Color(65, 105, 225));
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 32));
+		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setBounds(233, 36, 368, 50);
 		contentPane.add(lblTitulo);

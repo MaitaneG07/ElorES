@@ -147,8 +147,9 @@ public class Login extends JFrame {
     private void conectarAlServidor() {
         lblEstado.setText("Estado: Conectando...");
         
-        String ipServidor = "10.5.104.31";
-//        String ipServidor = "localhost";
+//        String ipServidor = "10.5.104.32";
+//        String ipServidor = "10.5.104.31";
+        String ipServidor = "localhost";
         int puerto = 8080;
         
         new Thread(() -> {
