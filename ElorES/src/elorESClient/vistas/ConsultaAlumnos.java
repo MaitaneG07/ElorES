@@ -36,14 +36,8 @@ public class ConsultaAlumnos extends JFrame {
 	private JScrollPane scrollPaneDetallesAlumno;
 	private DefaultTableModel modeloDetallesAlumno;
 	private JTable tablaDetallesAlumno;
-	private int idProfesor;
 	private JButton btnCiclo;
 	private JPopupMenu popupMenuCiclo;
-	private JMenuItem menuDAM;
-	private JMenuItem menuDAW;
-	private JMenuItem menuOTROS;
-	private JMenuItem menuASIR;
-	private JMenuItem menuSMR;
 	private AbstractButton btnCurso;
 	private JPopupMenu popupMenuCurso;
 	private Users user;
@@ -52,10 +46,6 @@ public class ConsultaAlumnos extends JFrame {
 	private JLabel lblImagenAlumno;
 	private Integer cicloFiltro = null;
 	private Integer cursoFiltro = null;
-	private Integer cicloSeleccionado;
-	private Integer cursoSeleccionado;
-	private JMenuItem menu1;
-	private JMenuItem menu2;
 
 	/**
 	 * Create the frame.

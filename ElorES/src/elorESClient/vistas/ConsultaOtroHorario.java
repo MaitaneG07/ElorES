@@ -37,28 +37,12 @@ public class ConsultaOtroHorario extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JMenuItem menuAsier;
-	private JMenuItem menuMikel;
-	private JMenuItem menuJose;
-	private JMenuItem menuAitziber;
-	private JMenuItem menuNerea;
-	private JPopupMenu popupMenuNombre;
-	private JMenuItem menuNereaG;
-	private JMenuItem menuJorge;
-	private JMenuItem menuIker;
-	private JMenuItem menuOier;
-	private JMenuItem menuRoman;
 	private JScrollPane scrollPaneHorarios;
 	private JTable tablaHorarios;
 	private DefaultTableModel modeloHorarios;
+	@SuppressWarnings("unused")
 	private Users user;
 	private Cliente cliente;
-	private JMenuItem menuDAM;
-	private JMenuItem menuDAW;
-	private JMenuItem menuOTROS;
-	private JMenuItem menuASIR;
-	private JMenuItem menuSMR;
-	private JLabel lblTitulo;
 	private JScrollPane scrollPaneProfesores;
 	private JTable tablaProfesores;
 	private DefaultTableModel modeloProfesores;
@@ -73,6 +57,7 @@ public class ConsultaOtroHorario extends JFrame {
 	private JPopupMenu popupMenuCiclo;
 	private JButton btnCurso;
 	private JPopupMenu popupMenuCurso;
+	private JLabel lblTitulo;
 	
 	private static final Color COLOR_PENDIENTE = new Color(255, 200, 100);
 	private static final Color COLOR_ACEPTADA = new Color(144, 238, 144);
@@ -372,13 +357,6 @@ public class ConsultaOtroHorario extends JFrame {
 		btnVolver.setBounds(958, 600, 102, 40);
 		contentPane.add(btnVolver);
 		
-		lblTitulo = new JLabel("HORARIOS");
-		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 27));
-		lblTitulo.setForeground(new Color(65, 105, 225));
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setBounds(177, 11, 476, 76);
-		contentPane.add(lblTitulo);
-		
 		actualizarTablaProfesores();
 		mostrarMensajeInicial();
 	}
@@ -459,11 +437,13 @@ public class ConsultaOtroHorario extends JFrame {
 
 							String contenidoActual = (String) modeloHorarios.getValueAt(fila, columna);
 							String contenidoNuevo;
-
+							String estadoOriginal = r.getEstado();
+							
 							if (contenidoActual == null || contenidoActual.trim().isEmpty()) {
-								contenidoNuevo = "Reunión";
-							} else {
 								contenidoNuevo = contenidoActual + "\n/ Reunión";
+								r.setEstado("conflicto");
+							} else {
+								contenidoNuevo = "Reunión";
 							}
 
 							modeloHorarios.setValueAt(contenidoNuevo, fila, columna);

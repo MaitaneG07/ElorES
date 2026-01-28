@@ -15,8 +15,9 @@ public class GestionReunion extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private int idProfesor;
+	@SuppressWarnings("unused")
 	private Users user;
+	@SuppressWarnings("unused")
 	private Cliente cliente;
 	
 	/**
