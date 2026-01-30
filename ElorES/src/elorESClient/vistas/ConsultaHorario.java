@@ -40,7 +40,6 @@ public class ConsultaHorario extends JFrame {
 	private JTable tablaHorario;
 	private Users user;
 	private Cliente cliente;
-	private Message respuesta;
 	
 	// Mapa para guardar las reuniones por posición [fila][columna]
 	private Map<String, Reuniones> reunionesPorCelda = new HashMap<>();
@@ -73,13 +72,13 @@ public class ConsultaHorario extends JFrame {
 
 		JLabel lblTitulo = new JLabel("MI HORARIO");
 		lblTitulo.setForeground(new Color(65, 105, 225));
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 32));
+		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setBounds(233, 36, 368, 50);
 		contentPane.add(lblTitulo);
 
 		scrollPaneHorario = new JScrollPane();
-		scrollPaneHorario.setBounds(105, 139, 630, 390);
+		scrollPaneHorario.setBounds(108, 139, 630, 390);
 		contentPane.add(scrollPaneHorario);
 
 		modeloHorario = new DefaultTableModel() {
@@ -90,6 +89,7 @@ public class ConsultaHorario extends JFrame {
 				return false;
 			}
 		};
+		
 		modeloHorario.addColumn("");
 		modeloHorario.addColumn("LUNES");
 		modeloHorario.addColumn("MARTES");
@@ -104,7 +104,6 @@ public class ConsultaHorario extends JFrame {
 		tablaHorario.getTableHeader().setBackground(new Color(65, 105, 225));
 		tablaHorario.getTableHeader().setForeground(Color.WHITE);
 
-		// Ajustar el ancho de las columnas
 		tablaHorario.getColumnModel().getColumn(0).setPreferredWidth(70);
 		tablaHorario.getColumnModel().getColumn(1).setPreferredWidth(110);
 		tablaHorario.getColumnModel().getColumn(2).setPreferredWidth(110);
@@ -195,7 +194,7 @@ public class ConsultaHorario extends JFrame {
 		});
 		btnVolver.setForeground(Color.WHITE);
 		btnVolver.setBackground(new Color(65, 105, 225));
-		btnVolver.setBounds(731, 564, 102, 40);
+		btnVolver.setBounds(727, 560, 102, 40);
 		contentPane.add(btnVolver);
 
 		cargarHorario();
@@ -211,12 +210,14 @@ public class ConsultaHorario extends JFrame {
 			modeloHorario.addRow(new Object[]{"Hora " + i, "", "", "", "", ""});
 		}
 
-		respuesta = cliente.getHorario(user.getId());
+		Message respuesta = cliente.getHorario(user.getId());
 
 		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
 			List<Horarios> horarios = respuesta.getHorarioList();
 
 			if (horarios != null && !horarios.isEmpty()) {
+				System.out.println("[CLIENTE] Procesando " + horarios.size() + " horarios");
+				
 				for (Horarios h : horarios) {
 					int fila = h.getHora() - 1;
 					int columna = getColumnaDia(h.getDia());
@@ -239,7 +240,11 @@ public class ConsultaHorario extends JFrame {
 						modeloHorario.setValueAt(nombreModulo, fila, columna);
 					}
 				}
+			} else {
+				System.out.println("[CLIENTE] No hay horarios para este profesor");
 			}
+		} else {
+			System.err.println("[CLIENTE ERROR] No se pudo cargar el horario");
 		}
 
 		Message respuestaReuniones = cliente.getReunionesProfesor(user.getId());
@@ -264,11 +269,13 @@ public class ConsultaHorario extends JFrame {
 
 							String contenidoActual = (String) modeloHorario.getValueAt(fila, columna);
 							String contenidoNuevo;
+							String estadoOriginal = r.getEstado();
 
-							if (contenidoActual == null || contenidoActual.trim().isEmpty()) {
-								contenidoNuevo = "Reunión";
-							} else {
+							if (contenidoActual != null && !contenidoActual.trim().isEmpty()) {
 								contenidoNuevo = contenidoActual + "\n/ Reunión";
+								r.setEstado("conflicto");
+							} else {
+								contenidoNuevo = "Reunión";
 							}
 
 							modeloHorario.setValueAt(contenidoNuevo, fila, columna);
@@ -276,7 +283,8 @@ public class ConsultaHorario extends JFrame {
 							String clave = fila + "-" + columna;
 							reunionesPorCelda.put(clave, r);
 
-							System.out.println("[CLIENTE] Reunión añadida: Fila=" + fila + ", Col=" + columna + ", Estado=" + r.getEstado());
+							System.out.println("[CLIENTE] Reunión añadida: Fila=" + fila + ", Col=" + columna + 
+											   ", Estado=" + r.getEstado() + ", Estado Original=" + estadoOriginal);
 						}
 					}
 				}
@@ -344,10 +352,86 @@ public class ConsultaHorario extends JFrame {
 		detalles.append("Estado: ").append(reunion.getEstado()).append("\n");
 		detalles.append("Fecha: ").append(reunion.getFecha()).append("\n");
 
-		JOptionPane.showMessageDialog(this,
+		String estadoActual = reunion.getEstado().toLowerCase();
+		
+		if (estadoActual.equals("pendiente")) {
+			Object[] opciones = {"Aceptar", "Cancelar", "Cerrar"};
+			int respuesta = JOptionPane.showOptionDialog(
+				this,
+				detalles.toString(),
+				"Detalles de la Reunión - Pendiente",
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				opciones,
+				opciones[2]
+			);
+
+			if (respuesta == 0) {
+				aceptarReunion(reunion);
+			} else if (respuesta == 1) {
+				cancelarReunion(reunion);
+			}
+		} else {
+			JOptionPane.showMessageDialog(this,
 				detalles.toString(),
 				"Detalles de la Reunión",
 				JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	/**
+	 * Acepta una reunión pendiente
+	 */
+	private void aceptarReunion(Reuniones reunion) {
+		reunion.setEstado("aceptada");
+		
+		Message respuesta = cliente.actualizarReunion(reunion);
+		
+		if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+			JOptionPane.showMessageDialog(this,
+				"La reunión ha sido aceptada correctamente.",
+				"Reunión Aceptada",
+				JOptionPane.INFORMATION_MESSAGE);
+			
+			cargarHorario();
+		} else {
+			JOptionPane.showMessageDialog(this,
+				"Error al aceptar la reunión. Por favor, inténtelo de nuevo.",
+				"Error",
+				JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * Cancela una reunión pendiente
+	 */
+	private void cancelarReunion(Reuniones reunion) {
+		int confirmacion = JOptionPane.showConfirmDialog(this,
+			"¿Está seguro de que desea cancelar esta reunión?",
+			"Confirmar Cancelación",
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.WARNING_MESSAGE);
+		
+		if (confirmacion == JOptionPane.YES_OPTION) {
+			reunion.setEstado("denegada");
+			
+			Message respuesta = cliente.actualizarReunion(reunion);
+			
+			if (respuesta != null && "OK".equals(respuesta.getEstado())) {
+				JOptionPane.showMessageDialog(this,
+					"La reunión ha sido cancelada correctamente.",
+					"Reunión Cancelada",
+					JOptionPane.INFORMATION_MESSAGE);
+				
+				cargarHorario();
+			} else {
+				JOptionPane.showMessageDialog(this,
+					"Error al cancelar la reunión. Por favor, inténtelo de nuevo.",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 
 	private int getColumnaDia(String dia) {

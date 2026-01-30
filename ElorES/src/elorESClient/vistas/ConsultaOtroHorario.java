@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,12 +40,13 @@ public class ConsultaOtroHorario extends JFrame {
 	private JScrollPane scrollPaneHorarios;
 	private JTable tablaHorarios;
 	private DefaultTableModel modeloHorarios;
+	@SuppressWarnings("unused")
 	private Users user;
 	private Cliente cliente;
-	private JLabel lblTitulo;
 	private JScrollPane scrollPaneProfesores;
 	private JTable tablaProfesores;
 	private DefaultTableModel modeloProfesores;
+	
 	private Message respuesta;
 	private Integer cicloFiltro = null;
 	private Integer cursoFiltro = null;
@@ -57,17 +57,21 @@ public class ConsultaOtroHorario extends JFrame {
 	private JPopupMenu popupMenuCiclo;
 	private JButton btnCurso;
 	private JPopupMenu popupMenuCurso;
+	private JLabel lblTitulo;
 	
 	private static final Color COLOR_PENDIENTE = new Color(255, 200, 100);
 	private static final Color COLOR_ACEPTADA = new Color(144, 238, 144);
 	private static final Color COLOR_CANCELADA = new Color(255, 160, 160);
 	private static final Color COLOR_CONFLICTO = new Color(192, 192, 192);
 
+	/**
+	 * Create the frame.
+	 */
 	public ConsultaOtroHorario(Users user, Cliente cliente) {
-
+		
 		this.user = user;
 		this.cliente = cliente;
-
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1100, 700);
 		setTitle("Consultar Horarios de Profesores");
@@ -75,7 +79,6 @@ public class ConsultaOtroHorario extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
 		JLabel lblLogo = new JLabel();
 		lblLogo.setBounds(10, 11, 131, 107);
 		ImageIcon icon = new ImageIcon(getClass().getResource("/elorESClient/images/logoElorrieta.png"));
@@ -84,18 +87,19 @@ public class ConsultaOtroHorario extends JFrame {
 		contentPane.add(lblLogo);
 
 		lblTitulo = new JLabel("HORARIOS");
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 27));
+		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		lblTitulo.setForeground(new Color(65, 105, 225));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setBounds(300, 20, 500, 50);
 		contentPane.add(lblTitulo);
 		
 		scrollPaneProfesores = new JScrollPane();
-		scrollPaneProfesores.setBounds(20, 120, 320, 430);
+		scrollPaneProfesores.setBounds(10, 149, 343, 332);
 		contentPane.add(scrollPaneProfesores);
 
 		modeloProfesores = new DefaultTableModel() {
 			private static final long serialVersionUID = 1L;
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -112,12 +116,14 @@ public class ConsultaOtroHorario extends JFrame {
 		tablaProfesores.getTableHeader().setBackground(new Color(65, 105, 225));
 		tablaProfesores.getTableHeader().setForeground(Color.WHITE);
 		tablaProfesores.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		
 		tablaProfesores.getColumnModel().getColumn(0).setMinWidth(0);
 		tablaProfesores.getColumnModel().getColumn(0).setMaxWidth(0);
 		tablaProfesores.getColumnModel().getColumn(0).setWidth(0);
 
+		// Agregar MouseListener para detectar el un clic y obtener el id
 		tablaProfesores.addMouseListener(new MouseAdapter() {
+			private Object modeloProfesores;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 1 && tablaProfesores.getSelectedRow() != -1) {
@@ -128,12 +134,13 @@ public class ConsultaOtroHorario extends JFrame {
 					
 					lblTitulo.setText("HORARIO DE " + nombreProfesor.toUpperCase() + " " + apellidosProfesor.toUpperCase());
 					actualizarTablaHorario(idProfesor);
+
 				}
 			}
 		});
 
 		scrollPaneProfesores.setViewportView(tablaProfesores);
-
+		
 		scrollPaneHorarios = new JScrollPane();
 		scrollPaneHorarios.setBounds(360, 120, 700, 430);
 		contentPane.add(scrollPaneHorarios);
@@ -258,7 +265,7 @@ public class ConsultaOtroHorario extends JFrame {
 			cursoFiltro = 2;
 			actualizarTablaProfesores();
 		});
-		
+
 		JMenuItem menuTodosCursos = new JMenuItem("Todos");
 		popupMenuCurso.add(menuTodosCursos);
 		menuTodosCursos.addActionListener(e -> {
@@ -268,8 +275,9 @@ public class ConsultaOtroHorario extends JFrame {
 
 		btnCurso.addActionListener(e -> {
 			popupMenuCurso.show(btnCurso, 0, btnCurso.getHeight());
-		});
 
+		});
+		
 		btnCiclo = new JButton("Ciclo");
 		btnCiclo.setBackground(new Color(65, 105, 225));
 		btnCiclo.setForeground(Color.WHITE);
@@ -323,7 +331,7 @@ public class ConsultaOtroHorario extends JFrame {
 		btnCiclo.addActionListener(e -> {
 			popupMenuCiclo.show(btnCiclo, 0, btnCiclo.getHeight());
 		});
-		
+
 		JButton btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.setBackground(new Color(220, 220, 220));
 		btnLimpiar.setForeground(Color.BLACK);
@@ -334,7 +342,7 @@ public class ConsultaOtroHorario extends JFrame {
 			actualizarTablaProfesores();
 		});
 		contentPane.add(btnLimpiar);
-
+		
 		JButton btnVolver = new JButton("VOLVER");
 		btnVolver.addMouseListener(new MouseAdapter() {
 			@Override
@@ -348,11 +356,11 @@ public class ConsultaOtroHorario extends JFrame {
 		btnVolver.setBackground(new Color(65, 105, 225));
 		btnVolver.setBounds(958, 600, 102, 40);
 		contentPane.add(btnVolver);
-
+		
 		actualizarTablaProfesores();
 		mostrarMensajeInicial();
 	}
-
+	
 	/**
 	 * Muestra un mensaje inicial en la tabla de horarios
 	 */
@@ -429,11 +437,13 @@ public class ConsultaOtroHorario extends JFrame {
 
 							String contenidoActual = (String) modeloHorarios.getValueAt(fila, columna);
 							String contenidoNuevo;
-
+							String estadoOriginal = r.getEstado();
+							
 							if (contenidoActual == null || contenidoActual.trim().isEmpty()) {
-								contenidoNuevo = "Reunión";
-							} else {
 								contenidoNuevo = contenidoActual + "\n/ Reunión";
+								r.setEstado("conflicto");
+							} else {
+								contenidoNuevo = "Reunión";
 							}
 
 							modeloHorarios.setValueAt(contenidoNuevo, fila, columna);
@@ -579,4 +589,5 @@ public class ConsultaOtroHorario extends JFrame {
 		tablaProfesores.revalidate();
 		tablaProfesores.repaint();
 	}
+
 }
