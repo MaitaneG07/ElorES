@@ -159,7 +159,7 @@ public class Perfil extends JFrame {
 		contentPane.add(btnVolver);
 		
 		JLabel lblTitulo = new JLabel("PERFIL");
-		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 26));
+		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		lblTitulo.setForeground(new Color(65, 105, 225));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setBounds(43, 131, 284, 76);
